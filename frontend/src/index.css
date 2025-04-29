@@ -1,1 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
+
+@plugin "daisyui" {
+  themes:
+    bumblebee --default,
+    bumblebee --prefersdark;
+}
+
+@theme {
+  --font-display: "Maragsa", system-ui;
+  --default-font-family: "Urbanist", system-ui;
+}
+
+@font-face {
+  font-family: "Maragsa";
+  src: url("./assets/fonts/maragsa.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  /* Container for the vertical scrolling */
+  .custom-fan-carousel {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    position: relative;
+    padding-top: 2rem;
+  }
+
+  .custom-carousel-item {
+    transform-origin: center center;
+    transition: transform 0.15s ease-out;
+    scroll-snap-align: center;
+    transform: translateY(0px) rotate(0deg);
+    display: flex;
+    flex-shrink: 0;
+    perspective: 1000px;
+    background-color: transparent;
+  }
+
+  .custom-carousel-item:hover .flip-inner {
+    transform: rotateY(180deg);
+  }
+}

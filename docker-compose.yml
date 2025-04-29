@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres
-    restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -14,7 +13,6 @@ services:
   backend:
     build: ./backend
     container_name: springboot_app
-    restart: always
     environment:
       SPRING_DATASOURCE_URL: ${DB_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
@@ -28,7 +26,6 @@ services:
 
   frontend:
     build: ./frontend
-    restart: always
     ports:
       - 5173:5173
     depends_on:
