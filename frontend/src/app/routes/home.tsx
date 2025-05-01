@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <main className="overflow-hidden">
-      <div className="bg-[url(../../../public/home_bg.jpg)] bg-cover h-screen pt-12">
+      <div className="bg-[url(../../../home_bg.jpg)] bg-cover h-screen pt-12">
         <section className="bg-neutral/30 m-auto w-[90vw] h-[90dvh] rounded-box backdrop-blur-xs">
           <div className="grid xl:grid-cols-2 gap-8 xl:gap-0 h-full place-content-center md:items-center">
             <div className="md:mt-0 text-center text-neutral-content">

@@ -10,8 +10,14 @@ export const paths = {
       getHref: () => "/",
     },
     dashboard: {
-      path: "",
-      getHref: () => "/app",
+      root: {
+        path: "/app/dashboard",
+        getHref: () => "/app",
+      },
+      members: {
+        path: "/app/dashboard/members",
+        getHref: () => "/members",
+      },
     },
   },
 } as const;
