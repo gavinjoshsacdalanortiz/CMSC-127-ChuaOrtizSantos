@@ -14,6 +14,8 @@ const LoginForm = () => {
 
     const email = form.email.value.trim();
     const password = form.password.value;
+
+    login({ username: email, password });
   };
 
   return (
@@ -24,12 +26,7 @@ const LoginForm = () => {
       <h2 className="font-display hidden mb-4 text-3xl xl:block">Login</h2>
       <label className="validator input mb-2 has-user-invalid:mb-0 w-full bg-transparent peer">
         <FiMail />
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email address"
-          required
-        />
+        <input name="email" type="email" placeholder="Email address" required />
       </label>
       <div className="validator-hint peer-has-user-invalid:!inline peer-user-invalid:inline mb-2 hidden">
         Enter a valid email address.
@@ -38,7 +35,7 @@ const LoginForm = () => {
       <label className="validator input w-full bg-transparent peer">
         <CgLock />
         <input
-          v-model="password"
+          name="password"
           type="password"
           placeholder="Password"
           minLength={8}

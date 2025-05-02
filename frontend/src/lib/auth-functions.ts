@@ -24,7 +24,7 @@ export const validateLoginInput = (data: LoginInput): string[] => {
 
 export const loginWithEmailAndPassword = (
   data: LoginInput
-): Promise<AuthResponse> => api.post("/auth/login", data);
+): Promise<AuthResponse> => api.post("/auth/signin", data);
 
 export type RegisterInput = {
   firstName: string;

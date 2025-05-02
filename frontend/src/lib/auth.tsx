@@ -32,6 +32,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  console.log(user);
+
   const fetchUser = useCallback(async () => {
     const token = getToken();
     if (!token) {
@@ -72,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     },
-    [fetchUser],
+    [fetchUser]
   );
 
   const register = useCallback(
@@ -90,7 +92,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     },
-    [fetchUser],
+    [fetchUser]
   );
 
   const logout = useCallback(async () => {
@@ -118,7 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       logout,
       loading,
     }),
-    [user, login, register, logout, loading],
+    [user, login, register, logout, loading]
   );
 
   return (

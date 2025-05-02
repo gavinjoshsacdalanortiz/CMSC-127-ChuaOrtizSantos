@@ -24,15 +24,16 @@ public class Fee {
     private LocalDate dueDate;
     private LocalDate datePaid;
     private Long memberId;
-    
+
     @ManyToOne
-    @JoinColumn(name = "organization_id")
+    @JoinColumn(name = "id")
     private Organization organization;
-    
-    public Fee() {}
-    
-    public Fee(BigDecimal amount, String semester, String academicYear, 
-               LocalDate dueDate, LocalDate datePaid, Long memberId, Organization organization) {
+
+    public Fee() {
+    }
+
+    public Fee(BigDecimal amount, String semester, String academicYear,
+            LocalDate dueDate, LocalDate datePaid, Long memberId, Organization organization) {
         this.amount = amount;
         this.semester = semester;
         this.academicYear = academicYear;
@@ -41,70 +42,70 @@ public class Fee {
         this.memberId = memberId;
         this.organization = organization;
     }
-    
+
     public Long getFeeId() {
         return feeId;
     }
-    
+
     public void setFeeId(Long feeId) {
         this.feeId = feeId;
     }
-    
+
     public BigDecimal getAmount() {
         return amount;
     }
-    
+
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-    
+
     public String getSemester() {
         return semester;
     }
-    
+
     public void setSemester(String semester) {
         this.semester = semester;
     }
-    
+
     public String getAcademicYear() {
         return academicYear;
     }
-    
+
     public void setAcademicYear(String academicYear) {
         this.academicYear = academicYear;
     }
-    
-    //---correction----
+
+    // ---correction----
     public LocalDate getDueDate() {
         return dueDate;
     }
-    
+
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
-    //------------------------------------------
-    
+    // ------------------------------------------
+
     public LocalDate getDatePaid() {
         return datePaid;
     }
-    
+
     public void setDatePaid(LocalDate datePaid) {
         this.datePaid = datePaid;
     }
-    
+
     public Long getMemberId() {
         return memberId;
     }
-    
+
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
-    
+
     public Organization getOrganization() {
         return organization;
     }
-    
+
     public void setOrganization(Organization organization) {
         this.organization = organization;
     }
