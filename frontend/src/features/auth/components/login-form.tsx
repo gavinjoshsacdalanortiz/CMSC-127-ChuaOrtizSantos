@@ -15,7 +15,7 @@ const LoginForm = () => {
     const email = form.email.value.trim();
     const password = form.password.value;
 
-    login({ email, password });
+    login({ username: email, password });
   };
 
   return (

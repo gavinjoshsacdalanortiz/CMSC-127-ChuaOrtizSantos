@@ -7,7 +7,7 @@ type FetchOptions = Omit<RequestInit, "body"> & {
 
 const constructUrlWithParams = (
   baseUrl: string,
-  params?: Record<string, any>,
+  params?: Record<string, any>
 ) => {
   if (!params || Object.keys(params).length === 0) {
     return baseUrl;
@@ -47,7 +47,7 @@ const defaultHeaders = {
 
 const fetchWithAuth = async <T = any>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<T> => {
   const config: RequestInit = {
     ...options,
@@ -59,6 +59,7 @@ const fetchWithAuth = async <T = any>(
   };
 
   const res = await fetch(`${env.API_URL}${url}`, config);
+  console.log(`${env.API_URL}${url}`, options);
 
   if (!res.ok) {
     if (res.status === 401) {

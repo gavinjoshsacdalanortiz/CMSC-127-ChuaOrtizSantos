@@ -2,9 +2,10 @@ services:
   backend:
     volumes:
       - ./backend:/app
+      - ./backend/target:/app/target
 
   frontend:
-    build: 
+    build:
       context: ./frontend
     volumes:
       - ./frontend:/app

@@ -2,16 +2,16 @@ import { api } from "./api-client";
 import { AuthResponse } from "@/types/api";
 
 export type LoginInput = {
-  email: string;
+  username: string;
   password: string;
 };
 
 export const validateLoginInput = (data: LoginInput): string[] => {
   const errors: string[] = [];
 
-  if (!data.email) {
+  if (!data.username) {
     errors.push("Email is required.");
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.username)) {
     errors.push("Email is invalid.");
   }
 
@@ -23,8 +23,8 @@ export const validateLoginInput = (data: LoginInput): string[] => {
 };
 
 export const loginWithEmailAndPassword = (
-  data: LoginInput
-): Promise<AuthResponse> => api.post("/auth/login", data);
+  data: LoginInput,
+): Promise<AuthResponse> => api.post("/auth/signin", data);
 
 export type RegisterInput = {
   firstName: string;
@@ -54,5 +54,5 @@ export const validateRegisterInput = (data: RegisterInput): string[] => {
 };
 
 export const registerWithEmailAndPassword = (
-  data: RegisterInput
+  data: RegisterInput,
 ): Promise<AuthResponse> => api.post("/auth/register", data);
