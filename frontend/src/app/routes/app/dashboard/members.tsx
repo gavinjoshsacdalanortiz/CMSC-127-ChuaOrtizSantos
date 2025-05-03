@@ -1,8 +1,18 @@
 import MemberFilterButton from "@/features/dashboard/components/member-filter-button";
+import { Filters } from "@/types/api";
 import { getDayName, getMonthName } from "@/utils/date";
+import { useEffect, useState } from "react";
+
+// TODO: edit options once backend is good
 
 const MembersDashboard = () => {
   const today = new Date();
+
+  const [filters, setFilters] = useState<Filters>({} as Filters);
+
+  useEffect(() => {
+    console.log(filters);
+  }, [filters]);
 
   return (
     <>
@@ -19,7 +29,18 @@ const MembersDashboard = () => {
         </div>
 
         <div className="space-y-1">
-          <select className="select border-none rounded-box bg-base-100">
+          <select
+            value={filters.batch}
+            className="select border-none rounded-box bg-base-100"
+            onChange={(e) => {
+              const newBatch = e.target.value;
+
+              setFilters((prevFilters) => ({
+                ...prevFilters,
+                batch: newBatch,
+              }));
+            }}
+          >
             <option>2023</option>
             <option>2022</option>
           </select>
@@ -27,11 +48,66 @@ const MembersDashboard = () => {
       </div>
 
       <div className="flex gap-2">
-        <MemberFilterButton label="Role" activated={false} />
-        <MemberFilterButton label="Status" activated={false} />
-        <MemberFilterButton label="Gender" activated={false} />
-        <MemberFilterButton label="Degree Program" activated={false} />
-        <MemberFilterButton label="Committee" activated={false} />
+        <MemberFilterButton
+          label="Role"
+          activated={!!filters.role}
+          options={["test", "test"]}
+          onChange={(newRole) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              role: newRole,
+            }));
+          }}
+        />
+        <MemberFilterButton
+          label="Status"
+          activated={!!filters.status}
+          options={["Active", "Inactive", "Expelled", "Suspended", "Alumni"]}
+          onChange={(newStatus) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              status: newStatus as
+                | "active"
+                | "inactive"
+                | "expelled"
+                | "suspended"
+                | "alumni",
+            }));
+          }}
+        />
+        <MemberFilterButton
+          label="Gender"
+          activated={!!filters.gender}
+          options={["Male", "Female"]}
+          onChange={(newGender) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              gender: newGender as "male" | "female",
+            }));
+          }}
+        />
+        <MemberFilterButton
+          label="Degree Program"
+          activated={!!filters.degreeProgram}
+          options={["Male", "Female"]}
+          onChange={(newDegreeProgram) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              degreeProgram: newDegreeProgram,
+            }));
+          }}
+        />
+        <MemberFilterButton
+          label="Committee"
+          activated={!!filters.committee}
+          options={["Male", "Female"]}
+          onChange={(newCommittee) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              committee: newCommittee,
+            }));
+          }}
+        />
       </div>
     </>
   );

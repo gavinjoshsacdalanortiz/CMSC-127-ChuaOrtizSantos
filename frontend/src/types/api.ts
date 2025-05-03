@@ -19,3 +19,12 @@ export type User = Entity<{
 export type AuthResponse = {
   token: string;
 };
+
+export type Filters = {
+  role: string;
+  status: "active" | "inactive" | "expelled" | "suspended" | "alumni";
+  gender: "male" | "female";
+  degreeProgram: string;
+  batch: string;
+  committe: string;
+};
