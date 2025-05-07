@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcnz.spring.auth.payload.JwtResponse;
 import com.mcnz.spring.auth.payload.LoginRequest;
-import com.mcnz.spring.auth.payload.UserDetailsRequest;
-import com.mcnz.spring.auth.payload.UserDetailsResponse;
 import com.mcnz.spring.common.security.jwt.JwtUtils;
 import com.mcnz.spring.user.User;
 import com.mcnz.spring.user.UserRepository;
