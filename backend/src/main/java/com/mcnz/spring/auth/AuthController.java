@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcnz.spring.auth.payload.JwtResponse;
 import com.mcnz.spring.auth.payload.LoginRequest;
+import com.mcnz.spring.auth.payload.UserDetailsRequest;
+import com.mcnz.spring.auth.payload.UserDetailsResponse;
 import com.mcnz.spring.common.security.jwt.JwtUtils;
 import com.mcnz.spring.user.User;
 import com.mcnz.spring.user.UserRepository;
@@ -33,25 +35,30 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
             UserRepository userRepository,
             PasswordEncoder encoder,
             JwtUtils jwtUtils) {
+        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
 
     }
 
-    // @GetMapping("/me")
-    // public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest
-    // loginRequest) {
+    @GetMapping("/me")
+    public ResponseEntity<?> authenticateUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // return ResponseEntity.ok(jwtResponse);
-    // }
+        User currentUser = (User) authentication.getPrincipal();
+
+        return ResponseEntity.ok(currentUser);
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -68,15 +75,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        User userDetails = (User) authentication.getPrincipal();
-        Map<String, List<String>> organizationRoles = userDetails.getOrganizationRolesMap();
-
-        JwtResponse jwtResponse = new JwtResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                organizationRoles);
+        JwtResponse jwtResponse = new JwtResponse(jwt);
 
         return ResponseEntity.ok(jwtResponse);
     }
