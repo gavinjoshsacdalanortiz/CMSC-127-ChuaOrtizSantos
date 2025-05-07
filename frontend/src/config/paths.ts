@@ -18,6 +18,10 @@ export const paths = {
         path: "/app/dashboard/members",
         getHref: () => "/members",
       },
+      fees: {
+        path: "/app/dashboard/fees",
+        getHref: () => "/fees",
+      },
     },
   },
 } as const;
