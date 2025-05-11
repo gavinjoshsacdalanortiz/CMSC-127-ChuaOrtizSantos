@@ -3,7 +3,7 @@ package com.mcnz.spring.membership;
 import java.util.UUID;
 
 import com.mcnz.spring.organization.Organization;
-import com.mcnz.spring.roles.Role;
+import com.mcnz.spring.role.Role;
 import com.mcnz.spring.user.User;
 
 import jakarta.persistence.Entity;

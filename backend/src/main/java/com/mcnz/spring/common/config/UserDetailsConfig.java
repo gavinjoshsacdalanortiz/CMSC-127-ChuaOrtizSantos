@@ -1,8 +1,11 @@
 package com.mcnz.spring.common.config;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +15,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.mcnz.spring.membership.UserOrganizationRole;
 import com.mcnz.spring.membership.UserOrganizationRoleRepository;
+import com.mcnz.spring.membership.UserOrganizationRoleRepository.MembershipDetailsProjection;
 import com.mcnz.spring.user.User;
 import com.mcnz.spring.user.UserRepository;
 
@@ -31,27 +34,38 @@ public class UserDetailsConfig {
             User user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-            List<UserOrganizationRole> memberships = userOrgRoleRepository.findByUser_Id(user.getId());
+            List<MembershipDetailsProjection> membershipProjections = userOrgRoleRepository
+                    .findMembershipDetailsByUserId(user.getId());
 
-            Map<String, List<String>> organizationRolesMap = memberships.stream()
-                    .collect(Collectors.groupingBy(
-                            membership -> membership.getOrganization().getId().toString(),
-                            Collectors.mapping(membership -> membership.getRole().getName().name(),
-                                    Collectors.toList())));
+            Map<String, Map<String, String>> orgRoleAndPositionMap = new HashMap<>();
+            if (membershipProjections != null) {
+                orgRoleAndPositionMap = membershipProjections.stream()
+                        .collect(Collectors.toMap(
+                                projection -> projection.getOrganizationId().toString(),
+                                projection -> {
+                                    Map<String, String> details = new HashMap<>();
+                                    details.put("role", projection.getRole());
+                                    details.put("position", projection.getPosition());
+                                    return details;
+                                },
+                                (existingValue, newValue) -> newValue));
+            }
 
-            // Using format "ROLE_ROLENAME_ORG_ORGID" for Spring Security context
-            List<GrantedAuthority> authorities = memberships.stream()
-                    .map(membership -> {
-                        String roleName = membership.getRole().getName().name();
-                        String orgId = membership.getOrganization().getId().toString();
-                        String authorityString = "ROLE_" + roleName + "_ORG_" + orgId;
-                        return new SimpleGrantedAuthority(authorityString);
-                    })
-                    .collect(Collectors.toList());
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            if (membershipProjections != null) {
+                authorities = membershipProjections.stream()
+                        .map(projection -> {
+                            String roleName = projection.getRole();
+                            String orgId = projection.getOrganizationId().toString();
+                            String authorityString = roleName + "_ORG_" + orgId;
+                            return new SimpleGrantedAuthority(authorityString);
+                        })
+                        .distinct()
+                        .collect(Collectors.toList());
+            }
 
             user.setAuthorities(authorities);
-            user.setOrganizationRolesMap(organizationRolesMap);
-
+            user.setOrganizationRolesMap(orgRoleAndPositionMap);
             return user;
         };
     }

@@ -15,11 +15,11 @@ ON CONFLICT (name) DO NOTHING; -- Optional: Prevent errors if roles already exis
 -- 2. Populate Organizations Table
 -- ==================================================
 -- *** REPLACE with actual valid UUIDs ***
-INSERT INTO organizations (id, organization_name) VALUES
+INSERT INTO organizations (organization_id, organization_name) VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Stark Industries'),
 ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 'Wayne Enterprises'),
 ('b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 'Oscorp')
-ON CONFLICT (id) DO NOTHING; -- Optional: Prevent errors if orgs already exist by ID
+ON CONFLICT (organization_id) DO NOTHING; -- Optional: Prevent errors if orgs already exist by ID
 
 -- ==================================================
 -- 3. Populate Users Table
@@ -66,21 +66,15 @@ ON CONFLICT (email) DO NOTHING; -- Optional: Prevent errors if users already exi
 -- *** Use the Role IDs (1, 2) inserted above (or UUIDs if roles.id is UUID). ***
 -- *** Provide unique, valid UUIDs for the 'id' column of this join table itself. ***
 
-INSERT INTO user_organization_role (id, user_id, organization_id, role_id) VALUES
+INSERT INTO user_organization_role (id, user_id, organization_id, role_id, position) VALUES
 
 -- Alice (User '4e5b...') is ADMIN (Role ID 1) in Stark Industries (Org 'a0ee...')
-('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1),
-
--- Bob (User '8a9b...') is MEMBER (Role ID 2) in Stark Industries (Org 'a0ee...')
-('222bbb22-cccc-dddd-eeee-ffffffffffff', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2),
-
--- Alice (User '4e5b...') is MEMBER (Role ID 2) in Wayne Enterprises (Org 'f81d...')
-('333ccc33-dddd-eeee-ffff-000000000000', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2),
+('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 'President'),
 
 -- Alice (User '4e5b...') is also ADMIN (Role ID 1) in Wayne Enterprises (Org 'f81d...')
-('444ddd44-eeee-ffff-0000-111111111111', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1),
+('444ddd44-eeee-ffff-0000-111111111111', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 'Secretary'),
 
 -- Bob (User '8a9b...') is MEMBER (Role ID 2) in Oscorp (Org 'b4a1...')
-('555eee55-ffff-0000-1111-222222222222', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 2)
+('555eee55-ffff-0000-1111-222222222222', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 2, 'Member')
 
 ON CONFLICT (id) DO NOTHING; -- Optional: Prevent errors if join records already exist by ID

@@ -7,15 +7,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "organizations")
 public class Organization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID organizationId;
 
     @Column(nullable = false, name = "organization_name")
     private String organizationName;
@@ -28,11 +26,11 @@ public class Organization {
     }
 
     public UUID getId() {
-        return id;
+        return organizationId;
     }
 
-    public void setOrganizationId(UUID id) {
-        this.id = id;
+    public void setOrganizationId(UUID organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getOrganizationName() {

@@ -1,4 +1,4 @@
-package com.mcnz.spring.roles;
+package com.mcnz.spring.role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

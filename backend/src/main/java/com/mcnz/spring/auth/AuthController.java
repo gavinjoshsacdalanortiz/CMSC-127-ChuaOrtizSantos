@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcnz.spring.auth.payload.JwtResponse;
 import com.mcnz.spring.auth.payload.LoginRequest;
+import com.mcnz.spring.auth.payload.PublicUserDetails;
 import com.mcnz.spring.common.security.jwt.JwtUtils;
 import com.mcnz.spring.user.User;
 import com.mcnz.spring.user.UserRepository;
@@ -36,7 +37,6 @@ public class AuthController {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
@@ -55,7 +55,7 @@ public class AuthController {
 
         User currentUser = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok(new PublicUserDetails(currentUser));
     }
 
     @PostMapping("/signin")

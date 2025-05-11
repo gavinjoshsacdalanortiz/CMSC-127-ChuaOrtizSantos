@@ -1,4 +1,4 @@
-package com.mcnz.spring.roles;
+package com.mcnz.spring.role;
 
 import jakarta.persistence.*;
 

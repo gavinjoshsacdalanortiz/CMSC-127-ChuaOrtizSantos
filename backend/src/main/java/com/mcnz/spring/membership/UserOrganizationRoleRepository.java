@@ -10,7 +10,20 @@ import java.util.UUID;
 
 @Repository
 public interface UserOrganizationRoleRepository extends JpaRepository<UserOrganizationRole, UUID> {
+        interface MembershipDetailsProjection {
+                UUID getOrganizationId();
 
-        @Query(value = "SELECT * FROM user_organization_role WHERE user_id = :userId", nativeQuery = true)
-        List<UserOrganizationRole> findByUser_Id(@Param("userId") UUID userId);
+                String getRole();
+
+                String getPosition();
+        }
+
+        @Query(value = "SELECT " +
+                        "uor.organization_id AS organizationId, " +
+                        "r.name AS role, " +
+                        "uor.position AS position " +
+                        "FROM user_organization_role AS uor " +
+                        "JOIN roles r ON uor.role_id = r.id " +
+                        "WHERE uor.user_id = :userId", nativeQuery = true)
+        List<MembershipDetailsProjection> findMembershipDetailsByUserId(@Param("userId") UUID userId);
 }

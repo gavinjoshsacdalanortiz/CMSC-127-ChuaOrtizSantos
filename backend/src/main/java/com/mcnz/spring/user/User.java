@@ -3,7 +3,6 @@ package com.mcnz.spring.user;
 import java.util.UUID;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -59,7 +58,7 @@ public class User implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Transient
-    private Map<String, List<String>> organizationRolesMap;
+    private Map<String, Map<String, String>> organizationRolesMap;
 
     public User() {
 
@@ -152,11 +151,11 @@ public class User implements UserDetails {
         return authorities;
     }
 
-    public void setOrganizationRolesMap(Map<String, List<String>> organizationRolesMap) {
+    public void setOrganizationRolesMap(Map<String, Map<String, String>> organizationRolesMap) {
         this.organizationRolesMap = organizationRolesMap;
     }
 
-    public Map<String, List<String>> getOrganizationRolesMap() {
+    public Map<String, Map<String, String>> getOrganizationRolesMap() {
         return organizationRolesMap;
     }
 
