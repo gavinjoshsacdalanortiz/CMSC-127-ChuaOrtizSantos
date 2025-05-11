@@ -1,11 +1,11 @@
 package com.mcnz.spring.auth.payload;
 
-import com.mcnz.spring.user.User;
-
 import java.util.Map;
 import java.util.UUID;
 
-public class PublicUserDetails {
+import com.mcnz.spring.member.Member;
+
+public class PublicMemberDetails {
     private UUID id;
 
     private String firstName;
@@ -54,14 +54,14 @@ public class PublicUserDetails {
         return organizationRolesMap;
     }
 
-    public PublicUserDetails(User user) {
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.gender = user.getGender();
-        this.degreeProgram = user.getDegreeProgram();
-        this.batch = user.getBatch();
-        this.email = user.getEmail();
-        this.organizationRolesMap = user.getOrganizationRolesMap();
+    public PublicMemberDetails(Member member) {
+        this.id = member.getMemberId();
+        this.firstName = member.getFirstName();
+        this.lastName = member.getLastName();
+        this.gender = member.getGender();
+        this.degreeProgram = member.getDegreeProgram();
+        this.batch = member.getBatch();
+        this.email = member.getEmail();
+        this.organizationRolesMap = member.getOrganizationRolesMap();
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.mcnz.spring.user.User;
+import com.mcnz.spring.member.Member;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -20,14 +20,14 @@ public class JwtUtils {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
   @Value("${mcnz.app.jwtSecret}")
-private String jwtSecret;
+  private String jwtSecret;
 
   @Value("${mcnz.app.jwtExpirationMs}")
   private int jwtExpirationMs;
 
   public String generateJwtToken(Authentication authentication) {
 
-    User userPrincipal = (User) authentication.getPrincipal();
+    Member userPrincipal = (Member) authentication.getPrincipal();
 
     return Jwts.builder()
         .setSubject((userPrincipal.getEmail()))
@@ -36,14 +36,14 @@ private String jwtSecret;
         .signWith(key(), SignatureAlgorithm.HS256)
         .compact();
   }
-  
+
   private Key key() {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
   public String getEmailFromJwtToken(String token) {
     return Jwts.parserBuilder().setSigningKey(key()).build()
-               .parseClaimsJws(token).getBody().getSubject();
+        .parseClaimsJws(token).getBody().getSubject();
   }
 
   public boolean validateJwtToken(String authToken) {

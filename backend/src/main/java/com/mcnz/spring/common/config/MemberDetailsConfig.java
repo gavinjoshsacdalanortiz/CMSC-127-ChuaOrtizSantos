@@ -15,27 +15,27 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.mcnz.spring.membership.UserOrganizationRoleRepository;
-import com.mcnz.spring.membership.UserOrganizationRoleRepository.MembershipDetailsProjection;
-import com.mcnz.spring.user.User;
-import com.mcnz.spring.user.UserRepository;
+import com.mcnz.spring.member.Member;
+import com.mcnz.spring.member.MemberRepository;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository.MembershipDetailsProjection;
 
 @Configuration
-public class UserDetailsConfig {
+public class MemberDetailsConfig {
 
     @Autowired
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    private UserOrganizationRoleRepository userOrgRoleRepository;
+    private MemberOrganizationRoleRepository memberOrgRoleRepository;
 
     @Bean
     UserDetailsService userDetailsService() {
         return username -> {
-            User user = userRepository.findByEmail(username)
+            Member member = memberRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-            List<MembershipDetailsProjection> membershipProjections = userOrgRoleRepository
-                    .findMembershipDetailsByUserId(user.getId());
+            List<MembershipDetailsProjection> membershipProjections = memberOrgRoleRepository
+                    .findMembershipDetailsByUserId(member.getMemberId());
 
             Map<String, Map<String, String>> orgRoleAndPositionMap = new HashMap<>();
             if (membershipProjections != null) {
@@ -64,9 +64,9 @@ public class UserDetailsConfig {
                         .collect(Collectors.toList());
             }
 
-            user.setAuthorities(authorities);
-            user.setOrganizationRolesMap(orgRoleAndPositionMap);
-            return user;
+            member.setAuthorities(authorities);
+            member.setOrganizationRolesMap(orgRoleAndPositionMap);
+            return member;
         };
     }
 }

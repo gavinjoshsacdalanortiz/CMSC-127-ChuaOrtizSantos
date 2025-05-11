@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcnz.spring.auth.payload.JwtResponse;
 import com.mcnz.spring.auth.payload.LoginRequest;
-import com.mcnz.spring.auth.payload.PublicUserDetails;
+import com.mcnz.spring.auth.payload.PublicMemberDetails;
 import com.mcnz.spring.common.security.jwt.JwtUtils;
-import com.mcnz.spring.user.User;
-import com.mcnz.spring.user.UserRepository;
+import com.mcnz.spring.member.Member;
+import com.mcnz.spring.member.MemberRepository;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,13 +34,13 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
-            UserRepository userRepository,
+            MemberRepository userRepository,
             PasswordEncoder encoder,
             JwtUtils jwtUtils) {
         this.userRepository = userRepository;
@@ -53,9 +53,9 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User currentUser = (User) authentication.getPrincipal();
+        Member currentMember = (Member) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new PublicUserDetails(currentUser));
+        return ResponseEntity.ok(new PublicMemberDetails(currentMember));
     }
 
     @PostMapping("/signin")

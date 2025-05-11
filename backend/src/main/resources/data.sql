@@ -6,7 +6,7 @@
 -- Assuming roles.id is BIGINT/INT and roles.name is VARCHAR matching ERole names
 -- Adjust ID values and names if your ERole enum or Role entity is different.
 -- If roles.id is UUID, replace 1, 2 with valid UUID strings.
-INSERT INTO roles (id, name) VALUES
+INSERT INTO role (role_id, name) VALUES
 (1, 'ROLE_ADMIN'), -- ID for ADMIN role
 (2, 'ROLE_USER')  -- ID for MEMBER/USER role
 ON CONFLICT (name) DO NOTHING; -- Optional: Prevent errors if roles already exist by name
@@ -15,7 +15,7 @@ ON CONFLICT (name) DO NOTHING; -- Optional: Prevent errors if roles already exis
 -- 2. Populate Organizations Table
 -- ==================================================
 -- *** REPLACE with actual valid UUIDs ***
-INSERT INTO organizations (organization_id, organization_name) VALUES
+INSERT INTO organization (organization_id, organization_name) VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Stark Industries'),
 ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 'Wayne Enterprises'),
 ('b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 'Oscorp')
@@ -30,7 +30,7 @@ ON CONFLICT (organization_id) DO NOTHING; -- Optional: Prevent errors if orgs al
 -- 'password123' -> $2a$10$VujCHM4n17SR6.VJ4ggh2eYGFwYV5sJwwwaZ9Cd6vdQBOpVANHBhW (Example)
 -- 'securepass'  -> $2a$10$N0sPls7/.gJYYkNe6y7.UeALQDmlW9Q7dS97R01f4m7o6zLJMw1wC (Example)
 
-INSERT INTO users (id, first_name, last_name, gender, degree_program, batch, email, password, created_at, updated_at) VALUES
+INSERT INTO member (member_id, first_name, last_name, gender, degree_program, batch, email, password, created_at, updated_at) VALUES
 (
     '4e5b6f70-1111-2222-3333-444444444444', -- Alice's UUID
     'Alice',
@@ -55,7 +55,7 @@ INSERT INTO users (id, first_name, last_name, gender, degree_program, batch, ema
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP
 )
-ON CONFLICT (email) DO NOTHING; -- Optional: Prevent errors if users already exist by email
+ON CONFLICT (member_id) DO NOTHING; -- Optional: Prevent errors if users already exist by email
 
 
 -- ==================================================
@@ -66,7 +66,7 @@ ON CONFLICT (email) DO NOTHING; -- Optional: Prevent errors if users already exi
 -- *** Use the Role IDs (1, 2) inserted above (or UUIDs if roles.id is UUID). ***
 -- *** Provide unique, valid UUIDs for the 'id' column of this join table itself. ***
 
-INSERT INTO user_organization_role (id, user_id, organization_id, role_id, position) VALUES
+INSERT INTO member_organization_role (id, member_id, organization_id, role_id, position) VALUES
 
 -- Alice (User '4e5b...') is ADMIN (Role ID 1) in Stark Industries (Org 'a0ee...')
 ('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 'President'),

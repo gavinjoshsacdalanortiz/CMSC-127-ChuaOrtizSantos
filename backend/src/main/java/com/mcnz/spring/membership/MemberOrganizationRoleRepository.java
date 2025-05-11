@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface UserOrganizationRoleRepository extends JpaRepository<UserOrganizationRole, UUID> {
+public interface MemberOrganizationRoleRepository extends JpaRepository<MemberOrganizationRole, UUID> {
         interface MembershipDetailsProjection {
                 UUID getOrganizationId();
 
@@ -19,11 +19,11 @@ public interface UserOrganizationRoleRepository extends JpaRepository<UserOrgani
         }
 
         @Query(value = "SELECT " +
-                        "uor.organization_id AS organizationId, " +
+                        "mor.organization_id AS organizationId, " +
                         "r.name AS role, " +
-                        "uor.position AS position " +
-                        "FROM user_organization_role AS uor " +
-                        "JOIN roles r ON uor.role_id = r.id " +
-                        "WHERE uor.user_id = :userId", nativeQuery = true)
-        List<MembershipDetailsProjection> findMembershipDetailsByUserId(@Param("userId") UUID userId);
+                        "mor.position AS position " +
+                        "FROM member_organization_role AS mor " +
+                        "JOIN role r ON mor.role_id = r.role_id " +
+                        "WHERE mor.member_id = :memberId", nativeQuery = true)
+        List<MembershipDetailsProjection> findMembershipDetailsByUserId(@Param("memberId") UUID memberId);
 }

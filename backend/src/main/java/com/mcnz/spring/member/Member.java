@@ -1,4 +1,4 @@
-package com.mcnz.spring.user;
+package com.mcnz.spring.member;
 
 import java.util.UUID;
 import java.util.Collection;
@@ -15,16 +15,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "users")
-public class User implements UserDetails {
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID memberId;
 
     @Column(nullable = false, name = "first_name")
     private String firstName;
@@ -60,11 +58,11 @@ public class User implements UserDetails {
     @Transient
     private Map<String, Map<String, String>> organizationRolesMap;
 
-    public User() {
+    public Member() {
 
     }
 
-    public User(String firstName, String lastName, String gender, String degreeProgram, String batch, String email,
+    public Member(String firstName, String lastName, String gender, String degreeProgram, String batch, String email,
             String password, Collection<? extends GrantedAuthority> authorities) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,8 +74,8 @@ public class User implements UserDetails {
         this.authorities = authorities;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getMemberId() {
+        return memberId;
     }
 
     public String getBatch() {
