@@ -1,56 +1,77 @@
 package com.mcnz.spring.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.mcnz.spring.auth.payload.PublicMemberDetails;
+import com.mcnz.spring.membership.MemberOrganizationRole;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository;
+// import com.mcnz.spring.organization.OrganizationRepository;
+import com.mcnz.spring.role.RoleRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/organization/{organizationId}/members")
 public class MemberController {
 
-    @Autowired
-    private MemberRepository memberRepository;
+        private final MemberOrganizationRoleRepository memberOrganizationRoleRepository;
 
-    @GetMapping
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    }
+        @Autowired
+        public MemberController(MemberRepository memberRepository,
+                        MemberOrganizationRoleRepository memberOrganizationRoleRepository,
+                        // OrganizationRepository organizationRepository,
+                        RoleRepository roleRepository) {
+                this.memberOrganizationRoleRepository = memberOrganizationRoleRepository;
+                // this.organizationRepository = organizationRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable UUID id) {
-        try {
-            Member member = memberRepository.findById(id)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            return ResponseEntity.ok(member);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
         }
-    }
 
-    @PostMapping
-    public ResponseEntity<?> createMember(@RequestBody Member user) {
-        Member newMember = memberRepository.save(user);
-        return ResponseEntity.ok("Created user" + newMember.getFirstName());
-    }
+        @GetMapping
+        @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
+        public ResponseEntity<List<PublicMemberDetails>> getAllMembersInOrganization(
+                        @PathVariable UUID organizationId) {
+                // if (!organizationRepository.existsById(organizationId)) {
+                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                // "Organization not found with ID: " + organizationId);
+                // }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateMember(@PathVariable UUID id, @RequestBody Member member) {
-        int rows = memberRepository.update(id, member.getFirstName(), member.getLastName(), member.getGender(),
-                member.getDegreeProgram(), member.getBatch(), member.getEmail());
-        if (rows > 0)
-            return ResponseEntity.ok("Updated successfully.");
-        return ResponseEntity.notFound().build();
-    }
+                List<MemberOrganizationRole> memberships = memberOrganizationRoleRepository
+                                .findByOrganizationId(organizationId);
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMember(@PathVariable UUID id) {
-        int rows = memberRepository.delete(id);
-        if (rows > 0)
-            return ResponseEntity.ok("Deleted successfully.");
-        return ResponseEntity.notFound().build();
-    }
+                List<PublicMemberDetails> members = memberships.stream()
+                                .map(membership -> new PublicMemberDetails(membership.getMember()))
+                                .collect(Collectors.toList());
+
+                return ResponseEntity.ok(members);
+        }
+
+        @GetMapping("/{memberId}")
+        @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
+        public ResponseEntity<PublicMemberDetails> getMemberInOrganization(@PathVariable UUID organizationId,
+                        @PathVariable UUID memberId) {
+                // if (!organizationRepository.existsById(organizationId)) {
+                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                // "Organization not found with ID: " + organizationId);
+                // }
+
+                Optional<MemberOrganizationRole> membershipOpt = memberOrganizationRoleRepository
+                                .findByMemberIdAndOrganizationId(memberId, organizationId);
+
+                if (membershipOpt.isEmpty()) {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                        "Member with ID " + memberId + " is not part of organization " + organizationId
+                                                        + " or member not found.");
+                }
+
+                return ResponseEntity.ok(new PublicMemberDetails(membershipOpt.get().getMember()));
+        }
+
 }
