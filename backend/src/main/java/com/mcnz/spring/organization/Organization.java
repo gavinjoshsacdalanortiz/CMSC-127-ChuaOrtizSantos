@@ -25,7 +25,7 @@ public class Organization {
         this.organizationName = organizationName;
     }
 
-    public UUID getId() {
+    public UUID getOrganizationId() {
         return organizationId;
     }
 

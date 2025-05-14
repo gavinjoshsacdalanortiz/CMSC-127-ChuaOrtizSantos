@@ -1,8 +1,5 @@
 package com.mcnz.spring.auth;
 
-import java.util.List;
-import java.util.Map;
-
 import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
@@ -23,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mcnz.spring.auth.payload.JwtResponse;
 import com.mcnz.spring.auth.payload.LoginRequest;
-import com.mcnz.spring.auth.payload.PublicMemberDetails;
+import com.mcnz.spring.auth.payload.AuthMemberDetails;
 import com.mcnz.spring.common.security.jwt.JwtUtils;
 import com.mcnz.spring.member.Member;
 import com.mcnz.spring.member.MemberRepository;
@@ -33,8 +30,6 @@ import com.mcnz.spring.member.MemberRepository;
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-
-    private final MemberRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
@@ -43,7 +38,6 @@ public class AuthController {
             MemberRepository userRepository,
             PasswordEncoder encoder,
             JwtUtils jwtUtils) {
-        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
 
@@ -55,7 +49,7 @@ public class AuthController {
 
         Member currentMember = (Member) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new PublicMemberDetails(currentMember));
+        return ResponseEntity.ok(new AuthMemberDetails(currentMember));
     }
 
     @PostMapping("/signin")

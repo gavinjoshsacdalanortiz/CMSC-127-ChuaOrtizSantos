@@ -35,9 +35,6 @@ public class Member implements UserDetails {
     @Column(nullable = false, name = "degree_program")
     private String degreeProgram;
 
-    @Column(nullable = false)
-    private String batch;
-
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
@@ -68,7 +65,6 @@ public class Member implements UserDetails {
         this.lastName = lastName;
         this.gender = gender;
         this.degreeProgram = degreeProgram;
-        this.batch = batch;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
@@ -76,10 +72,6 @@ public class Member implements UserDetails {
 
     public UUID getMemberId() {
         return memberId;
-    }
-
-    public String getBatch() {
-        return batch;
     }
 
     public String getFirstName() {

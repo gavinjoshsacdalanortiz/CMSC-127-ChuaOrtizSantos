@@ -36,13 +36,12 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
         @Modifying
         @Transactional
         @Query(value = "UPDATE member SET first_name = :firstName, last_name =:lastName, gender = :gender, " +
-                        "degree_program = :degreeProgram, batch = :batch, email = :email, " +
+                        "degree_program = :degreeProgram, email = :email, " +
                         "updated_at = CURRENT_TIMESTAMP " +
                         "WHERE id = :id", nativeQuery = true)
         int update(@Param("id") UUID id, @Param("firstName") String firstName,
                         @Param("lastName") String lastName,
                         @Param("gender") String gender, @Param("degreeProgram") String degreeProgram,
-                        @Param("batch") String batch,
                         @Param("email") String email);
 
         @Modifying

@@ -3,15 +3,12 @@ package com.mcnz.spring.membership;
 import java.util.UUID;
 
 import com.mcnz.spring.member.Member;
-import com.mcnz.spring.organization.Organization;
-import com.mcnz.spring.role.Role;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class MemberOrganizationRole {
@@ -19,34 +16,61 @@ public class MemberOrganizationRole {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(nullable = false)
+    private UUID member_id;
 
-    @ManyToOne
-    @JoinColumn(name = "organization_id")
-    private Organization organization;
+    @Column(nullable = false)
+    private UUID organization_id;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    private Integer role_id;
 
     private String position;
 
-    public Member getMember() {
-        return member;
+    @Column(nullable = false)
+    private String batch;
+
+    @Column(nullable = false)
+    private String status;
+
+    private String committee;
+
+    public UUID getMemberId() {
+        return member_id;
     }
 
-    public Organization getOrganization() {
-        return organization;
+    public UUID getOrganizationId() {
+        return organization_id;
     }
 
-    public Role getRole() {
-        return role;
+    public Integer getRole() {
+        return role_id;
+    }
+
+    public void setRole(Integer role_id) {
+        this.role_id = role_id;
     }
 
     public String getPosition() {
         return position;
     }
 
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCommittee() {
+        return committee;
+    }
+
+    public void setCommittee(String committee) {
+        this.committee = committee;
+    }
 }

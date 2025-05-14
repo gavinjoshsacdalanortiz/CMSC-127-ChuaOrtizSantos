@@ -3,7 +3,6 @@ package com.mcnz.spring.common.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.mcnz.spring.member.Member;
 import com.mcnz.spring.member.MemberRepository;
 import com.mcnz.spring.membership.MemberOrganizationRoleRepository;
-import com.mcnz.spring.membership.MemberOrganizationRoleRepository.MembershipDetailsProjection;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository.MemberRolesProjection;
 
 @Configuration
 public class MemberDetailsConfig {
@@ -34,8 +33,8 @@ public class MemberDetailsConfig {
             Member member = memberRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
-            List<MembershipDetailsProjection> membershipProjections = memberOrgRoleRepository
-                    .findMembershipDetailsByUserId(member.getMemberId());
+            List<MemberRolesProjection> membershipProjections = memberOrgRoleRepository
+                    .findRolesByMemberId(member.getMemberId());
 
             Map<String, Map<String, String>> orgRoleAndPositionMap = new HashMap<>();
             if (membershipProjections != null) {
