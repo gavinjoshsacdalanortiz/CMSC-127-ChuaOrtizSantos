@@ -11,9 +11,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.mcnz.spring.member.MemberRepository;
 import com.mcnz.spring.membership.payload.MembershipDetails;
 
 @RestController
@@ -23,7 +26,8 @@ public class MemberOrganizationRoleController {
 
         @Autowired
         public MemberOrganizationRoleController(
-                        MemberOrganizationRoleRepository memberOrganizationRoleRepository) {
+                        MemberOrganizationRoleRepository memberOrganizationRoleRepository,
+                        MemberRepository memberRepository) {
                 this.memberOrganizationRoleRepository = memberOrganizationRoleRepository;
         }
 
@@ -83,35 +87,49 @@ public class MemberOrganizationRoleController {
                                                         + " or member not found.");
                 }
 
-                int rows = memberOrganizationRoleRepository.deleteByMemberIdAndOrganizationId(organizationId, memberId);
+                memberOrganizationRoleRepository.deleteByMemberIdAndOrganizationId(organizationId, memberId);
 
                 return ResponseEntity.ok("Successfully deleted!");
         }
 
-        // @PutMapping("/{memberId}")
-        // @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        // public ResponseEntity<?> deleteMemberInOrganization(@PathVariable UUID
-        // organizationId,
-        // @PathVariable UUID memberId) {
-        // // if (!organizationRepository.existsById(organizationId)) {
-        // // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-        // // "Organization not found with ID: " + organizationId);
-        // // }
+        /*
+         * These are the only updatable fields
+         * this.committee = committee;
+         * this.position = position;
+         * this.status = status;
+         */
+        @PutMapping("/{memberId}")
+        @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
+        public ResponseEntity<?> updateMemberInOrganization(@PathVariable UUID organizationId,
+                        @PathVariable UUID memberId, @PathVariable MembershipDetails membershipDetails) {
+                // if (!organizationRepository.existsById(organizationId)) {
+                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                // "Organization not found with ID: " + organizationId);
+                // }
 
-        // Optional<MembershipDetails> membership = memberOrganizationRoleRepository
-        // .findByMemberIdAndOrganizationId(organizationId, memberId);
+                MembershipDetails membership = memberOrganizationRoleRepository
+                                .findByMemberIdAndOrganizationId(organizationId, memberId)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Member with ID " + memberId + " is not part of organization " +
+                                                                organizationId
+                                                                + " or member not found."));
 
-        // if (membership.isEmpty()) {
-        // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-        // "Member with ID " + memberId + " is not part of organization " +
-        // organizationId
-        // + " or member not found.");
-        // }
+                if (membershipDetails.getCommittee() != null) {
+                        membership.setCommittee(membershipDetails.getCommittee());
+                }
 
-        // int rows =
-        // memberOrganizationRoleRepository.deleteByMemberIdAndOrganizationId(organizationId,
-        // memberId);
+                if (membershipDetails.getPosition() != null) {
+                        membership.setPosition(membershipDetails.getPosition());
+                }
 
-        // return ResponseEntity.ok("Successfully deleted!");
-        // }
+                if (membershipDetails.getStatus() != null) {
+                        membership.setStatus(membershipDetails.getStatus());
+                        if (membership.getStatus() == "inactive") {
+                                membership.setBatch(null);
+                                membership.setCommittee(null);
+                        }
+                }
+
+                return ResponseEntity.ok("Successfully updated!");
+        }
 }

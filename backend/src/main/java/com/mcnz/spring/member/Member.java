@@ -53,10 +53,20 @@ public class Member implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Transient
-    private Map<String, Map<String, String>> organizationRolesMap;
+    private Map<String, String> organizationRolesMap;
 
     public Member() {
 
+    }
+
+    public Member(UUID memberId, String firstName, String lastName, String gender, String degreeProgram,
+            String email) {
+        this.memberId = memberId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.degreeProgram = degreeProgram;
+        this.email = email;
     }
 
     public Member(String firstName, String lastName, String gender, String degreeProgram, String batch, String email,
@@ -141,11 +151,11 @@ public class Member implements UserDetails {
         return authorities;
     }
 
-    public void setOrganizationRolesMap(Map<String, Map<String, String>> organizationRolesMap) {
+    public void setOrganizationRolesMap(Map<String, String> organizationRolesMap) {
         this.organizationRolesMap = organizationRolesMap;
     }
 
-    public Map<String, Map<String, String>> getOrganizationRolesMap() {
+    public Map<String, String> getOrganizationRolesMap() {
         return organizationRolesMap;
     }
 

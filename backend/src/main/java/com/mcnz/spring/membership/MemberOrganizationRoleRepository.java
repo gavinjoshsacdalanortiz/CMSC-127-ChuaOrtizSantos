@@ -1,9 +1,12 @@
 package com.mcnz.spring.membership;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.mcnz.spring.membership.payload.MembershipDetails;
 
 import java.util.List;
@@ -52,7 +55,9 @@ public interface MemberOrganizationRoleRepository extends JpaRepository<MemberOr
         // organizationId,
         // @Param("memberId") UUID memberId);
 
-        @Query(value = "DELETE FROM member_organization_role"
+        @Modifying
+        @Transactional
+        @Query(value = "DELETE FROM member_organization_role mor "
                         +
                         "WHERE mor.organization_id = :organizationId AND mor.member_id = :memberId", nativeQuery = true)
         int deleteByMemberIdAndOrganizationId(@Param("organizationId") UUID organizationId,

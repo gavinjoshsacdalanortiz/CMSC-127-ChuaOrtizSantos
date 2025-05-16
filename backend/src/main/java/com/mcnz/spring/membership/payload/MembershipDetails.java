@@ -24,7 +24,7 @@ public class MembershipDetails {
 
     private String status;
 
-    public UUID getMemberId() {
+    public UUID getMember_id() {
         return member_id;
     }
 
@@ -32,36 +32,72 @@ public class MembershipDetails {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getGender() {
         return gender;
     }
 
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getDegreeProgram() {
         return degreeProgram;
     }
 
-    public String getBatch() {
-        return batch;
+    public void setDegreeProgram(String degreeProgram) {
+        this.degreeProgram = degreeProgram;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
     public String getCommittee() {
         return committee;
+    }
+
+    public void setCommittee(String committee) {
+        this.committee = committee;
     }
 
     public String getPosition() {
         return position;
     }
 
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public MembershipDetails(UUID member_id, String firstName, String lastName, String gender, String degreeProgram,

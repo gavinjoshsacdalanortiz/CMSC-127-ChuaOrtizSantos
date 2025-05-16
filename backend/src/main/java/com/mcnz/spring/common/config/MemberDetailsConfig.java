@@ -36,17 +36,12 @@ public class MemberDetailsConfig {
             List<MemberRolesProjection> membershipProjections = memberOrgRoleRepository
                     .findRolesByMemberId(member.getMemberId());
 
-            Map<String, Map<String, String>> orgRoleAndPositionMap = new HashMap<>();
+            Map<String, String> orgRoleAndPositionMap = new HashMap<>();
             if (membershipProjections != null) {
                 orgRoleAndPositionMap = membershipProjections.stream()
                         .collect(Collectors.toMap(
                                 projection -> projection.getOrganizationId().toString(),
-                                projection -> {
-                                    Map<String, String> details = new HashMap<>();
-                                    details.put("role", projection.getRole());
-                                    details.put("position", projection.getPosition());
-                                    return details;
-                                },
+                                projection -> projection.getRole(),
                                 (existingValue, newValue) -> newValue));
             }
 
