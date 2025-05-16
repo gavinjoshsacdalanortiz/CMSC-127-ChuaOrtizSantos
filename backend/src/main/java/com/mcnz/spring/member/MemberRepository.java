@@ -51,5 +51,4 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
         @Query(value = "SELECT COUNT(*) FROM member", nativeQuery = true)
         long count();
-
 }
