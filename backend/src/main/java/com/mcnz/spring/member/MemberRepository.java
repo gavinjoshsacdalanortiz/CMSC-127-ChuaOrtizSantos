@@ -51,4 +51,40 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
         @Query(value = "SELECT COUNT(*) FROM member", nativeQuery = true)
         long count();
+
+        @Query(value = "SELECT * FROM member m JOIN member_organization mo ON m.id = mo.member_id " +
+        "WHERE mo.organization_id = :organizationId", nativeQuery = true)
+        List<Member> findByOrganizationId(@Param("organizationId") Long organizationId);
+
+        @Query(value = "SELECT * FROM member m JOIN member_organization mo ON m.id = mo.member_id " +
+        "WHERE mo.organization_id = :organizationId AND mo.role = :role", nativeQuery = true)
+        List<Member> findByOrganizationIdAndRole(@Param("organizationId") Long organizationId, @Param("role") String role);
+
+        @Query(value = "SELECT * FROM member m JOIN member_organization mo ON m.id = mo.member_id " +
+        "WHERE mo.organization_id = :organizationId AND mo.status = :status", nativeQuery = true)
+        List<Member> findByOrganizationIdAndStatus(@Param("organizationId") Long organizationId, @Param("status") String status);
+
+        @Query(value = "SELECT * FROM member WHERE gender = :gender", nativeQuery = true)
+        List<Member> findByGender(@Param("gender") String gender);
+
+        @Query(value = "SELECT * FROM member WHERE degree_program = :degreeProgram", nativeQuery = true)
+        List<Member> findByDegreeProgram(@Param("degreeProgram") String degreeProgram);
+
+        @Query(value = "SELECT * FROM member WHERE EXTRACT(YEAR FROM created_at) = :year", nativeQuery = true)
+        List<Member> findByYear(@Param("year") int year);
+
+        @Query(value = "SELECT * FROM member m JOIN member_organization mo ON m.id = mo.member_id " +
+        "WHERE mo.organization_id = :organizationId " +
+        "AND (:role IS NULL OR mo.role = :role) " +
+        "AND (:status IS NULL OR mo.status = :status) " +
+        "AND (:gender IS NULL OR m.gender = :gender) " +
+        "AND (:degreeProgram IS NULL OR m.degree_program = :degreeProgram) " +
+        "AND (:year IS NULL OR EXTRACT(YEAR FROM m.created_at) = :year)", nativeQuery = true)
+        List<Member> filterMembers(
+        @Param("organizationId") Long organizationId,
+        @Param("role") String role,
+        @Param("status") String status,
+        @Param("gender") String gender,
+        @Param("degreeProgram") String degreeProgram,
+        @Param("year") Integer year);
 }

@@ -22,7 +22,7 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
     Optional<Fee> findById(@Param("feeId") Long feeId);
 
     @Query(value = "SELECT * FROM fees WHERE member_id = :memberId", nativeQuery = true)
-    List<Fee> findByMemberId(@Param("memberId") UUID memberId);
+    List<Fee> findByMemberId(@Param("memberId") Long memberId);
 
     @Query(value = "SELECT * FROM fees WHERE semester = :semester", nativeQuery = true)
     List<Fee> findBySemester(@Param("semester") String semester);
@@ -42,7 +42,7 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
             "VALUES (:amount, :semester, :academicYear, :dueDate, :datePaid, :memberId, :organizationId)", nativeQuery = true)
     int save(@Param("amount") BigDecimal amount, @Param("semester") String semester,
             @Param("academicYear") String academicYear, @Param("dueDate") LocalDate dueDate,
-            @Param("datePaid") LocalDate datePaid, @Param("memberId") UUID memberId,
+            @Param("datePaid") LocalDate datePaid, @Param("memberId") Long memberId,
             @Param("organizationId") UUID organizationId);
 
     @Modifying
@@ -53,7 +53,7 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
     int update(@Param("feeId") Long feeId, @Param("amount") BigDecimal amount, 
             @Param("semester") String semester, @Param("academicYear") String academicYear,
             @Param("dueDate") LocalDate dueDate, @Param("datePaid") LocalDate datePaid,
-            @Param("memberId") UUID memberId, @Param("organizationId") UUID organizationId);
+            @Param("memberId") Long memberId, @Param("organizationId") UUID organizationId);
 
     @Modifying
     @Transactional
