@@ -18,7 +18,7 @@ public class AuthMemberDetails {
 
     private String email;
 
-    Map<String, String> organizationRolesMap;
+    Map<String, Map<String, String>> organizationRolesMap;
 
     public AuthMemberDetails(Member member) {
         this.member_id = member.getMemberId();
@@ -54,7 +54,7 @@ public class AuthMemberDetails {
         return email;
     }
 
-    public Map<String, String> getOrganizationRolesMap() {
+    public Map<String, Map<String, String>> getOrganizationRolesMap() {
         return organizationRolesMap;
     }
 }

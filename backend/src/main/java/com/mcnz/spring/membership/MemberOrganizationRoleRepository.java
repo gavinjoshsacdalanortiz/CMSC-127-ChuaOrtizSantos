@@ -20,15 +20,16 @@ public interface MemberOrganizationRoleRepository extends JpaRepository<MemberOr
 
                 String getRole();
 
-                String getPosition();
+                String getOrganizationName();
         }
 
         @Query(value = "SELECT " +
                         "mor.organization_id AS organizationId, " +
                         "r.name AS role, " +
-                        "mor.position AS position " +
+                        "o.organization_name " +
                         "FROM member_organization_role AS mor " +
                         "JOIN role r ON mor.role_id = r.role_id " +
+                        "JOIN organization o ON mor.organization_id = o.organization_id " +
                         "WHERE mor.member_id = :memberId", nativeQuery = true)
         List<MemberRolesProjection> findRolesByMemberId(@Param("memberId") UUID memberId);
 

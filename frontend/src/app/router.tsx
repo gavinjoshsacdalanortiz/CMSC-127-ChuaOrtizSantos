@@ -19,7 +19,11 @@ const createAppRouter = () => {
     },
     {
       path: paths.app.root.path,
-      element: <AppRoot />,
+      element: (
+        <ProtectedRoute>
+          <AppRoot />
+        </ProtectedRoute>
+      ),
       ErrorBoundary: AppRootErrorBoundary,
       children: [
         {

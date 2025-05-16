@@ -3,6 +3,7 @@ package com.mcnz.spring.common.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -58,7 +59,8 @@ public class WebSecurityConfig {
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/signin").permitAll()
-            .requestMatchers("/membership/*", "/auth/me").permitAll().anyRequest().authenticated());
+            .requestMatchers(HttpMethod.OPTIONS, "/membership/**", "/auth/me").permitAll().anyRequest()
+            .authenticated());
 
     http.authenticationProvider(authenticationProvider());
 

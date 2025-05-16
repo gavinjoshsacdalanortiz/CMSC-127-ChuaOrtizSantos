@@ -1,4 +1,5 @@
 import DashboardTab from "@/features/dashboard/components/dashboard-tab";
+import { useAuth } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { TbCash } from "react-icons/tb";
@@ -9,8 +10,11 @@ type LayoutProps = {
 };
 
 const DashboardLayout = ({ children }: LayoutProps) => {
+  const { user } = useAuth();
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState("");
+
+  console.log(user);
 
   useEffect(() => {
     const currentTab = location.pathname.split("/").at(-1);
@@ -28,8 +32,12 @@ const DashboardLayout = ({ children }: LayoutProps) => {
       <section className="p-8 w-full space-y-2 [&_button]:btn-full">
         <h2 className="text-2xl mb-20 font-semibold">Logo Here</h2>
         <select className="select select-lg !text-sm select-accent rounded-box bg-accent text-neutral-content mb-8">
-          <option>UP Human Settlements</option>
-          <option>YSES</option>
+          {user &&
+            Object.keys(user.organizationRolesMap).map((orgId) => (
+              <option>
+                {user.organizationRolesMap[`${orgId}`].organizationName}
+              </option>
+            ))}
         </select>
 
         <DashboardTab

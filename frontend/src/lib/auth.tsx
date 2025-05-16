@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(response);
     } catch (error) {
       console.error("Error fetching user:", error);
-      removeToken();
+      // removeToken();
       setUser(null);
     } finally {
       setLoading(false);

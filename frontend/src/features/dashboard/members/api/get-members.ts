@@ -5,8 +5,12 @@ import type {
   UseMembersReturn,
 } from "@/types/member";
 import { api } from "@/lib/api-client";
+import { getToken } from "@/lib/cookie";
 
-export function useMembers(options: MemberQueryOptions = {}): UseMembersReturn {
+export function useMembers(
+  options: MemberQueryOptions = {},
+  organizationId: string
+): UseMembersReturn {
   const [members, setMembers] = useState<Member[] | null>(null);
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -24,14 +28,18 @@ export function useMembers(options: MemberQueryOptions = {}): UseMembersReturn {
       setPending(true);
       setError(null);
 
+      if (!getToken()) return;
+
       try {
         // Adjust the endpoint as per your Spring Boot controller mapping for users/members
         // e.g., /users, /api/users, /members, /api/members
         const response = await api.get<{ members: Member[] }>( // Or just `Member[]` if your API returns an array directly
-          "/members", // OR /users - check your backend endpoint
+          `/membership/${organizationId}/members`, // OR /users - check your backend endpoint
+
           {
+            headers: { Authorization: `Bearer ${getToken()}` },
             params: currentOptions, // Pass the filter options as query parameters
-          },
+          }
         );
 
         if (!isCancelled) {
@@ -43,7 +51,7 @@ export function useMembers(options: MemberQueryOptions = {}): UseMembersReturn {
         console.error("useMembers: Fetch failed", err);
         if (!isCancelled) {
           setError(
-            err instanceof Error ? err : new Error("Failed to fetch members"),
+            err instanceof Error ? err : new Error("Failed to fetch members")
           );
           setMembers(null); // Clear members on error
         }
@@ -61,7 +69,7 @@ export function useMembers(options: MemberQueryOptions = {}): UseMembersReturn {
       isCancelled = true;
       console.log("useMembers Effect: Cleanup");
     };
-  }, [optionsString, refreshIndex]); // Re-run effect if options or refreshIndex changes
+  }, [optionsString, organizationId]); // Re-run effect if options or refreshIndex changes
 
   const refresh = useCallback(() => {
     setRefreshIndex((prevIndex) => prevIndex + 1);

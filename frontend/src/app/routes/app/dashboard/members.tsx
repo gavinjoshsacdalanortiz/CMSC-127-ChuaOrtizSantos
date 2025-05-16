@@ -4,16 +4,18 @@ import { useMembers } from "@/features/dashboard/members/api/get-members";
 import MemberFilterButton from "@/features/dashboard/members/components/member-filter-button";
 import { MemberQueryOptions } from "@/types/member";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 const MembersDashboard = () => {
+  const { organizationId } = useParams();
   const [filters, setFilters] = useState<MemberQueryOptions>(
-    {} as MemberQueryOptions,
+    {} as MemberQueryOptions
   );
   // TODO: show members; use table na rin
-  const { members, pending, error } = useMembers(filters);
+  const { members, pending, error } = useMembers(filters, organizationId);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFilters((prev) => ({

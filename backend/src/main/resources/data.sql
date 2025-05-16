@@ -88,7 +88,7 @@ ON CONFLICT (member_id) DO NOTHING;
 -- 4. Populate UserOrganizationRole Table (Join Table)
 -- ==================================================
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, position, status, committee) VALUES
--- Eve
+-- Alice
 ('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 'President', 'active', 'Executive'),
 ('444ddd44-eeee-ffff-0000-111111111111', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 'Secretary', 'active', 'Executive'),
 

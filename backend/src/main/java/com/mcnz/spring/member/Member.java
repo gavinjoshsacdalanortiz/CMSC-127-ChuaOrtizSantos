@@ -55,7 +55,7 @@ public class Member implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     @Transient
-    private Map<String, String> organizationRolesMap;
+    private Map<String, Map<String, String>> organizationRolesMap;
 
     public Member() {
 
@@ -153,11 +153,11 @@ public class Member implements UserDetails {
         return authorities;
     }
 
-    public void setOrganizationRolesMap(Map<String, String> organizationRolesMap) {
+    public void setOrganizationRolesMap(Map<String, Map<String, String>> organizationRolesMap) {
         this.organizationRolesMap = organizationRolesMap;
     }
 
-    public Map<String, String> getOrganizationRolesMap() {
+    public Map<String, Map<String, String>> getOrganizationRolesMap() {
         return organizationRolesMap;
     }
 
