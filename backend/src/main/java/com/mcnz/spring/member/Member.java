@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,14 +61,14 @@ public class Member implements UserDetails {
 
     }
 
-    public Member(UUID memberId, String firstName, String lastName, String gender, String degreeProgram,
-            String email) {
-        this.memberId = memberId;
+    public Member(String firstName, String lastName, String gender, String degreeProgram,
+            String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.degreeProgram = degreeProgram;
         this.email = email;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public Member(String firstName, String lastName, String gender, String degreeProgram, String batch, String email,

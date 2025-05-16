@@ -2,24 +2,34 @@ package com.mcnz.spring.membership.payload;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class MembershipDetails {
 
     private UUID member_id;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String lastName;
 
+    @NotBlank
     private String gender;
 
+    @NotBlank
     private String degreeProgram;
 
+    @NotBlank
     private String email;
 
+    @NotBlank
     private String batch;
 
+    @NotBlank
     private String committee;
 
+    @NotBlank
     private String position;
 
     private String status;
@@ -98,6 +108,10 @@ public class MembershipDetails {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public MembershipDetails() {
+
     }
 
     public MembershipDetails(UUID member_id, String firstName, String lastName, String gender, String degreeProgram,

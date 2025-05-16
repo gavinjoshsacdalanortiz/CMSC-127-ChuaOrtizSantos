@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class MemberOrganizationRole {
@@ -32,7 +33,19 @@ public class MemberOrganizationRole {
     @Column(nullable = false)
     private String status;
 
+    @NotBlank
     private String committee;
+
+    public MemberOrganizationRole(UUID member_id, UUID organization_id, Integer role_id, String position, String batch,
+            String status, String committee) {
+        this.member_id = member_id;
+        this.organization_id = organization_id;
+        this.role_id = role_id;
+        this.position = position;
+        this.batch = batch;
+        this.status = status;
+        this.committee = committee;
+    }
 
     public UUID getMemberId() {
         return member_id;

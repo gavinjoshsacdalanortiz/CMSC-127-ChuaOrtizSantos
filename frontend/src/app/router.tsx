@@ -27,7 +27,7 @@ const createAppRouter = () => {
           element: <DashboardRoot />,
           children: [
             {
-              path: paths.app.dashboard.root.path,
+              index: true,
               element: <MembersDashboard />,
             },
             {

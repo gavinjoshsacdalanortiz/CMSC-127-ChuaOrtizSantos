@@ -12,9 +12,11 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  console.log(user);
+
   useEffect(() => {
     if (user) {
-      navigate(redirectTo ? redirectTo : paths.app.root.getHref(), {
+      navigate(redirectTo ? redirectTo : paths.app.dashboard.root.path, {
         replace: true,
       });
     }

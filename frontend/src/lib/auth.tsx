@@ -32,8 +32,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(user);
-
   const fetchUser = useCallback(async () => {
     const token = getToken();
     if (!token) {
@@ -45,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get("/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(response.data);
+      setUser(response);
     } catch (error) {
       console.error("Error fetching user:", error);
       removeToken();

@@ -59,7 +59,6 @@ const fetchWithAuth = async <T = any>(
   };
 
   const res = await fetch(`${env.API_URL}${url}`, config);
-  console.log(`${env.API_URL}${url}`, options);
 
   if (!res.ok) {
     if (res.status === 401) {
