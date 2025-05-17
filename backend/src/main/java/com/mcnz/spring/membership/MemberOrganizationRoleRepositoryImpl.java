@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class MemberOrganizationRoleRepositoryImpl {
+public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationRoleRepositoryCustom {
 
     private final EntityManager entityManager;
 
@@ -18,8 +18,18 @@ public class MemberOrganizationRoleRepositoryImpl {
         this.entityManager = entityManager;
     }
 
-    public List<MembershipDetails> findMembersByOrganizationIdWithFilters(UUID organizationId, String role,
-            String status, String gender, String degreeProgram, Integer year) {
+    @Override
+    public List<MembershipDetails> findMembersByOrganizationIdWithFilters(
+            UUID organizationId,
+            String position,
+            String committee,
+            String status,
+            String gender,
+            String degreeProgram,
+            Integer year,
+            String sortBy,
+            String sortDirection) {
+
         StringBuilder sql = new StringBuilder(
                 "SELECT m.member_id, first_name, last_name, gender, degree_program, email, batch, committee, position, status "
                         +
@@ -28,9 +38,10 @@ public class MemberOrganizationRoleRepositoryImpl {
                         "JOIN member m ON mor.member_id = m.member_id " +
                         "WHERE mor.organization_id = :organizationId");
 
-        // Dynamic filters
-        if (role != null)
-            sql.append(" AND mor.position = :role");
+        if (position != null)
+            sql.append(" AND mor.position = :position");
+        if (committee != null)
+            sql.append(" AND mor.committee = :committee");
         if (status != null)
             sql.append(" AND mor.status = :status");
         if (gender != null)
@@ -40,11 +51,26 @@ public class MemberOrganizationRoleRepositoryImpl {
         if (year != null)
             sql.append(" AND mor.batch = :year");
 
-        Query query = entityManager.createNativeQuery(sql.toString(), "MembershipDetailsMapping");
+        // Allowed columns for sorting to prevent SQL injection
+        List<String> allowedSortFields = List.of(
+                "position", "status", "committee", "batch", "firstName", "lastName", "gender", "degreeProgram");
+        List<String> allowedDirections = List.of("asc", "desc");
+
+        if (sortBy != null && allowedSortFields.contains(sortBy.toLowerCase())) {
+            String direction = (sortDirection != null && allowedDirections.contains(sortDirection.toLowerCase()))
+                    ? sortDirection
+                    : "asc"; // default to ASC
+
+            sql.append(" ORDER BY ").append(sortBy).append(" ").append(direction.toUpperCase());
+        }
+
+        Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("organizationId", organizationId);
 
-        if (role != null)
-            query.setParameter("role", role);
+        if (position != null)
+            query.setParameter("position", position);
+        if (committee != null)
+            query.setParameter("committee", committee);
         if (status != null)
             query.setParameter("status", status);
         if (gender != null)
@@ -54,6 +80,21 @@ public class MemberOrganizationRoleRepositoryImpl {
         if (year != null)
             query.setParameter("year", year.toString());
 
-        return query.getResultList();
+        List<Object[]> rows = query.getResultList();
+
+        return rows.stream()
+                .map(row -> new MembershipDetails(
+                        (UUID) row[0],
+                        (String) row[1],
+                        (String) row[2],
+                        (String) row[3],
+                        (String) row[4],
+                        (String) row[5],
+                        (String) row[6],
+                        (String) row[7],
+                        (String) row[8],
+                        (String) row[9]))
+                .toList();
     }
+
 }

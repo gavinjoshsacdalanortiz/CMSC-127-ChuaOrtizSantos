@@ -48,7 +48,9 @@ public class MemberOrganizationRoleController {
                         @RequestParam(required = false) String status,
                         @RequestParam(required = false) String gender,
                         @RequestParam(required = false) String degreeProgram,
-                        @RequestParam(required = false) Integer year) {
+                        @RequestParam(required = false) Integer year,
+                        @RequestParam(required = false) String sortBy,
+                        @RequestParam(required = false) String sortDirection) {
 
                 // if (!organizationRepository.existsById(organizationId)) {
                 // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -56,14 +58,16 @@ public class MemberOrganizationRoleController {
                 // }
 
                 List<MembershipDetails> members = memberOrganizationRoleRepository
-                                .findMembersByOrganizationIdAndFilters(
+                                .findMembersByOrganizationIdWithFilters(
                                                 organizationId,
                                                 position,
                                                 committee,
                                                 status,
                                                 gender,
                                                 degreeProgram,
-                                                year);
+                                                year,
+                                                sortBy,
+                                                sortDirection);
 
                 return ResponseEntity.ok(members);
         }
