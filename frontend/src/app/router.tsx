@@ -15,7 +15,7 @@ const createAppRouter = () => {
   const routes: RouteObject[] = [
     {
       path: paths.home.path,
-      element: <Home />,
+      element: <FeesDashboard />,
     },
     {
       path: paths.app.root.path,
