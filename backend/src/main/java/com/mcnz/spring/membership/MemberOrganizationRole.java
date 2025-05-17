@@ -2,14 +2,15 @@ package com.mcnz.spring.membership;
 
 import java.util.UUID;
 
-import com.mcnz.spring.member.Member;
+import com.mcnz.spring.status.Status;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class MemberOrganizationRole {
@@ -28,21 +29,30 @@ public class MemberOrganizationRole {
     private String position;
 
     @Column(nullable = false)
-    private String batch;
+    private Integer batch;
 
     @Column(nullable = false)
-    private String status;
+    private Integer year;
 
-    @NotBlank
+    @Column(nullable = false)
+    private Integer semester;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30, nullable = false)
+    private Status status;
+
     private String committee;
 
-    public MemberOrganizationRole(UUID member_id, UUID organization_id, Integer role_id, String position, String batch,
-            String status, String committee) {
+    public MemberOrganizationRole(UUID member_id, UUID organization_id, Integer role_id, String position, Integer batch,
+            Integer year, Integer semester,
+            Status status, String committee) {
         this.member_id = member_id;
         this.organization_id = organization_id;
         this.role_id = role_id;
         this.position = position;
         this.batch = batch;
+        this.year = year;
+        this.semester = semester;
         this.status = status;
         this.committee = committee;
     }
@@ -71,11 +81,11 @@ public class MemberOrganizationRole {
         this.position = position;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -86,4 +96,29 @@ public class MemberOrganizationRole {
     public void setCommittee(String committee) {
         this.committee = committee;
     }
+
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
+    }
+
+    public Integer getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Integer batch) {
+        this.batch = batch;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
 }

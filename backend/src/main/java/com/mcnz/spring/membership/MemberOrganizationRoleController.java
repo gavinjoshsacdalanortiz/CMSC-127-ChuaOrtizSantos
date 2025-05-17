@@ -1,33 +1,25 @@
 package com.mcnz.spring.membership;
 
 import com.mcnz.spring.member.Member;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.mcnz.spring.member.MemberRepository;
+import com.mcnz.spring.membership.payload.MembershipDetails;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.mcnz.spring.member.MemberRepository;
-import com.mcnz.spring.membership.payload.MembershipDetails;
-
-import jakarta.validation.Valid;
+import com.mcnz.spring.status.Status;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/membership/{organizationId}/members")
 public class MemberOrganizationRoleController {
+
         private final MemberOrganizationRoleRepository memberOrganizationRoleRepository;
         private final MemberRepository memberRepository;
 
@@ -35,27 +27,30 @@ public class MemberOrganizationRoleController {
         public MemberOrganizationRoleController(
                         MemberOrganizationRoleRepository memberOrganizationRoleRepository,
                         MemberRepository memberRepository) {
-                this.memberRepository = memberRepository;
                 this.memberOrganizationRoleRepository = memberOrganizationRoleRepository;
+                this.memberRepository = memberRepository;
         }
 
         @GetMapping
         @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        public ResponseEntity<List<MembershipDetails>> getAllMembersInOrganization(
+        public ResponseEntity<List<MembershipDetails>> getOrganizationMembers(
                         @PathVariable UUID organizationId,
                         @RequestParam(required = false) String position,
                         @RequestParam(required = false) String committee,
                         @RequestParam(required = false) String status,
                         @RequestParam(required = false) String gender,
                         @RequestParam(required = false) String degreeProgram,
+                        @RequestParam(required = false) Integer batch,
+                        @RequestParam(required = false) Integer batchStart,
+                        @RequestParam(required = false) Integer batchEnd,
                         @RequestParam(required = false) Integer year,
+                        @RequestParam(required = false) Integer yearStart,
+                        @RequestParam(required = false) Integer yearEnd,
+                        @RequestParam(required = false) Integer semester,
+                        @RequestParam(required = false) Integer semesterStart,
+                        @RequestParam(required = false) Integer semesterEnd,
                         @RequestParam(required = false) String sortBy,
                         @RequestParam(required = false) String sortDirection) {
-
-                // if (!organizationRepository.existsById(organizationId)) {
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                // "Organization not found with ID: " + organizationId);
-                // }
 
                 List<MembershipDetails> members = memberOrganizationRoleRepository
                                 .findMembersByOrganizationIdWithFilters(
@@ -65,7 +60,15 @@ public class MemberOrganizationRoleController {
                                                 status,
                                                 gender,
                                                 degreeProgram,
+                                                batch,
+                                                batchStart,
+                                                batchEnd,
                                                 year,
+                                                yearStart,
+                                                yearEnd,
+                                                semester,
+                                                semesterStart,
+                                                semesterEnd,
                                                 sortBy,
                                                 sortDirection);
 
@@ -74,132 +77,129 @@ public class MemberOrganizationRoleController {
 
         @GetMapping("/{memberId}")
         @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        public ResponseEntity<MembershipDetails> getMemberInOrganization(@PathVariable UUID organizationId,
-                        @PathVariable UUID memberId) {
-                // if (!organizationRepository.existsById(organizationId)) {
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                // "Organization not found with ID: " + organizationId);
-                // }
+        public ResponseEntity<MembershipDetails> getMemberMembership(
+                        @PathVariable UUID organizationId,
+                        @PathVariable UUID memberId,
+                        @RequestParam(required = false) Integer year,
+                        @RequestParam(required = false) Integer semester) {
 
-                Optional<MembershipDetails> membership = memberOrganizationRoleRepository
-                                .findByMemberIdAndOrganizationId(organizationId, memberId);
+                Optional<MembershipDetails> membership;
 
-                if (membership.isEmpty()) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                        "Member with ID " + memberId + " is not part of organization " +
-                                                        organizationId
-                                                        + " or member not found.");
+                if (year != null && semester != null) {
+                        membership = memberOrganizationRoleRepository
+                                        .findMembershipDetailsForSemester(organizationId, memberId, year, semester);
+                } else {
+                        // Get latest membership if no year/semester specified
+                        membership = memberOrganizationRoleRepository
+                                        .findLatestMembershipDetails(organizationId, memberId);
                 }
 
-                return ResponseEntity.ok(membership.get());
+                return membership.map(ResponseEntity::ok)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Member with ID " + memberId + " is not part of organization "
+                                                                + organizationId));
         }
 
         @DeleteMapping("/{memberId}")
         @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        public ResponseEntity<?> deleteMemberInOrganization(@PathVariable UUID organizationId,
+        public ResponseEntity<Void> removeMemberFromOrganization(
+                        @PathVariable UUID organizationId,
                         @PathVariable UUID memberId) {
-                // if (!organizationRepository.existsById(organizationId)) {
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                // "Organization not found with ID: " + organizationId);
-                // }
 
-                Optional<MembershipDetails> membership = memberOrganizationRoleRepository
-                                .findByMemberIdAndOrganizationId(organizationId, memberId);
-
-                if (membership.isEmpty()) {
+                if (!memberOrganizationRoleRepository.existsByOrganizationIdAndMemberId(organizationId, memberId)) {
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                        "Member with ID " + memberId + " is not part of organization " +
-                                                        organizationId
-                                                        + " or member not found.");
+                                        "Member with ID " + memberId + " is not part of organization "
+                                                        + organizationId);
                 }
 
-                memberOrganizationRoleRepository.deleteByMemberIdAndOrganizationId(organizationId, memberId);
-
-                return ResponseEntity.ok("Successfully deleted!");
+                memberOrganizationRoleRepository.removeAllMembershipsFromOrganization(organizationId, memberId);
+                return ResponseEntity.noContent().build();
         }
 
-        @PutMapping
+        @PostMapping
         @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        public ResponseEntity<?> addMemberToOrganization(@PathVariable UUID organizationId,
+        public ResponseEntity<MembershipDetails> addMemberToOrganization(
+                        @PathVariable UUID organizationId,
                         @Valid @RequestBody MembershipDetails membershipDetails) {
-                // if (!organizationRepository.existsById(organizationId)) {
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                // "Organization not found with ID: " + organizationId);
-                // }`
 
-                Optional<Member> member = memberRepository
-                                .findByEmail(membershipDetails.getEmail());
+                Optional<Member> member = memberRepository.findByEmail(membershipDetails.getEmail());
+                UUID memberId = member.map(Member::getMemberId)
+                                .orElseGet(() -> memberRepository.save(
+                                                new Member(
+                                                                membershipDetails.getFirstName(),
+                                                                membershipDetails.getLastName(),
+                                                                membershipDetails.getGender(),
+                                                                membershipDetails.getDegreeProgram(),
+                                                                membershipDetails.getEmail(),
+                                                                "123456"
 
-                int role = membershipDetails.getPosition().toLowerCase().equals("member") ? 1 : 2;
-                UUID memberId;
+                                                )).getMemberId());
 
-                if (member.isEmpty()) {
-                        Member newMember = memberRepository.save(new Member(membershipDetails.getFirstName(),
-                                        membershipDetails.getLastName(), membershipDetails.getGender(),
-                                        membershipDetails.getDegreeProgram(), membershipDetails.getEmail(), "123456"));
-                        memberId = newMember.getMemberId();
-                } else {
-                        memberId = member.get().getMemberId();
-                }
+                Integer role = "member".equalsIgnoreCase(membershipDetails.getPosition()) ? 2 : 1;
 
-                memberOrganizationRoleRepository.save(new MemberOrganizationRole(memberId, organizationId, role,
-                                membershipDetails.getPosition(), membershipDetails.getBatch(), "active",
-                                membershipDetails.getCommittee()));
+                MemberOrganizationRole newMembership = new MemberOrganizationRole(
+                                memberId,
+                                organizationId,
+                                role,
+                                membershipDetails.getPosition(),
+                                membershipDetails.getBatch(),
+                                membershipDetails.getYear(),
+                                membershipDetails.getSemester(),
+                                Status.active,
+                                membershipDetails.getCommittee());
 
-                return ResponseEntity.ok("Successfully updated!");
+                memberOrganizationRoleRepository.save(newMembership);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(membershipDetails);
         }
 
-        /*
-         * These are the only updatable fields
-         * this.committee = committee;
-         * this.position = position;
-         * this.status = status;
-         */
         @PatchMapping("/{memberId}")
         @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
-        public ResponseEntity<?> updateMemberInOrganization(@PathVariable UUID organizationId,
-                        @PathVariable UUID memberId, @RequestBody MembershipDetails membershipDetails) {
-                // if (!organizationRepository.existsById(organizationId)) {
-                // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                // "Organization not found with ID: " + organizationId);
-                // }
+        public ResponseEntity<MembershipDetails> updateMemberMembership(
+                        @PathVariable UUID organizationId,
+                        @PathVariable UUID memberId,
+                        @RequestParam Integer year,
+                        @RequestParam Integer semester,
+                        @RequestBody MembershipDetails membershipDetails) {
 
                 MembershipDetails membership = memberOrganizationRoleRepository
-                                .findByMemberIdAndOrganizationId(organizationId, memberId)
+                                .findMembershipDetailsForSemester(organizationId, memberId, year, semester)
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                "Member with ID " + memberId + " is not part of organization " +
-                                                                organizationId
-                                                                + " or member not found."));
+                                                "Member with ID " + memberId + " is not part of organization "
+                                                                + organizationId));
 
+                // Update fields if provided
                 if (membershipDetails.getCommittee() != null) {
                         membership.setCommittee(membershipDetails.getCommittee());
                 }
 
                 if (membershipDetails.getPosition() != null) {
                         membership.setPosition(membershipDetails.getPosition());
-                        if (!membership.getPosition().toLowerCase().equals("member")) {
+                        if (!"member".equalsIgnoreCase(membership.getPosition())) {
                                 membership.setCommittee("Executive");
                         }
                 }
 
                 if (membershipDetails.getStatus() != null) {
                         membership.setStatus(membershipDetails.getStatus());
-                        if (membership.getStatus().equals("inactive") || membership.getStatus().equals("alumni")) {
+                        if ("inactive".equals(membership.getStatus()) || "alumni".equals(membership.getStatus())) {
                                 membership.setPosition(null);
                                 membership.setCommittee(null);
-                        } else {
-                                if (membership.getCommittee() == null && membership.getCommittee() == null)
-                                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                        "Member with ID " + memberId
-                                                                        + " cannot be active with organization " +
-                                                                        organizationId
-                                                                        + " while having no committee/position.");
+                        } else if (membership.getCommittee() == null || membership.getPosition() == null) {
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                                "Active members must have both committee and position");
                         }
                 }
 
-                memberOrganizationRoleRepository.updateByMemberIdAndOrganizationId(organizationId, memberId,
-                                membership.getCommittee(), membership.getPosition(), membership.getStatus());
+                memberOrganizationRoleRepository.updateSemesterMembershipDetails(
+                                organizationId,
+                                memberId,
+                                membership.getCommittee(),
+                                membership.getPosition(),
+                                membership.getStatus().toString(),
+                                year,
+                                semester);
 
-                return ResponseEntity.ok("Successfully updated!");
+                return ResponseEntity.ok(membership);
         }
 }

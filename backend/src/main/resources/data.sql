@@ -87,22 +87,60 @@ ON CONFLICT (member_id) DO NOTHING;
 -- ==================================================
 -- 4. Populate UserOrganizationRole Table (Join Table)
 -- ==================================================
-INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, position, status, committee) VALUES
--- Alice
-('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 'President', 'active', 'Executive'),
-('444ddd44-eeee-ffff-0000-111111111111', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 'Secretary', 'active', 'Executive'),
+INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
+-- Alice (batch 2024) - only has 2024 records since batch is recent
+('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 2024, 1, 'President', 'active', 'Executive'),
+('111aaa11-bbbb-cccc-dddd-eeeeeeeeeee2', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 2024, 2, 'President', 'active', 'Executive'),
+('111aaa11-bbbb-cccc-dddd-eeeeeeeeeeee', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 2025, 1, 'President', 'active', 'Executive'),
+('111aaa11-bbbb-cccc-dddd-eeeeeeeeeee2', '4e5b6f70-1111-2222-3333-444444444444', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024, 2025, 2, 'President', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111111', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2023, 1, 'Secretary', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111112', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2023, 2, 'Secretary', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111113', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2024, 1, 'Secretary', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111114', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2024, 2, 'Secretary', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111115', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2025, 1, 'Secretary', 'active', 'Executive'),
+('444ddd44-eeee-ffff-0000-111111111116', '4e5b6f70-1111-2222-3333-444444444444', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2025, 2, 'Secretary', 'active', 'Executive'),
 
--- Bob
-('555eee55-ffff-0000-1111-222222222222', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 2, 2025, 'Member', 'active', 'Finance'),
+-- Bob (batch 2025) - only has 2025 records since batch is current year
+('555eee55-ffff-0000-1111-222222222222', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 2, 2025, 2025, 1, 'Member', 'active', 'Finance'),
+('555eee55-ffff-0000-1111-222222222223', '8a9b0c1d-aaaa-bbbb-cccc-dddddddddddd', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 2, 2025, 2025, 2, 'Member', 'active', 'Finance'),
 
--- Carol in Stark Industries as Member
-('666fff66-0000-1111-2222-333333333333', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 'Treasurer', 'active', 'Executive'),
--- Carol in Wayne Enterprises as Admin
-('777aaa77-1111-2222-3333-444444444444', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 'Member', 'active', 'Human Resources'),
--- David in Oscorp as Admin
-('888bbb88-2222-3333-4444-555555555555', '079a180b-709f-427c-bc6b-036a11a4398d', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 1, 2025, NULL, 'inactive', NULL),
--- David in Stark Industries as Member
-('999ccc99-3333-4444-5555-666666666666', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 'Member', 'active', 'Projects'),
--- Eve in LexCorp as Admin
-('aaabbba0-4444-5555-6666-777777777777', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', NULL, 2021, NULL, 'alumni', NULL)
+-- Carol (batch 2022) - has records from 2022 to 2025
+-- Stark Industries as Member
+('666fff66-0000-1111-2222-333333333333', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2022, 1, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333334', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2022, 2, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333335', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2023, 1, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333336', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2023, 2, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333337', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2024, 1, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333338', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2024, 2, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-333333333339', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2025, 1, 'Treasurer', 'active', 'Executive'),
+('666fff66-0000-1111-2222-33333333333a', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2022, 2025, 2, 'Treasurer', 'active', 'Executive'),
+-- Wayne Enterprises as Admin
+('777aaa77-1111-2222-3333-444444444444', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2023, 1, 'Member', 'active', 'Human Resources'),
+('777aaa77-1111-2222-3333-444444444445', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2023, 2, 'Member', 'active', 'Human Resources'),
+('777aaa77-1111-2222-3333-444444444446', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2024, 1, 'Member', 'active', 'Human Resources'),
+('777aaa77-1111-2222-3333-444444444447', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2024, 2, 'Member', 'active', 'Human Resources'),
+('777aaa77-1111-2222-3333-444444444448', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2025, 1, 'Member', 'active', 'Human Resources'),
+('777aaa77-1111-2222-3333-444444444449', '3c4d5e6f-bbcc-ddee-ff00-112233445566', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2023, 2025, 2, 'Member', 'active', 'Human Resources'),
+
+-- David (batch 2023) - has records from 2023 to 2025
+-- Oscorp as Admin
+('888bbb88-2222-3333-4444-555555555555', '079a180b-709f-427c-bc6b-036a11a4398d', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 1, 2025, 2025, 1, 'Member', 'active', 'Projects'),
+('888bbb88-2222-3333-4444-555555555556', '079a180b-709f-427c-bc6b-036a11a4398d', 'b4a1c2d3-e4f5-a6b7-c8d9-e0f1a2b3c4d5', 1, 2025, 2025, 2, NULL, 'inactive', NULL),
+-- Stark Industries as Member
+('999ccc99-3333-4444-5555-666666666666', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2023, 1, 'Member', 'active', 'Projects'),
+('999ccc99-3333-4444-5555-666666666667', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2023, 2, 'Member', 'active', 'Projects'),
+('999ccc99-3333-4444-5555-666666666668', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2024, 1, 'Member', 'active', 'Projects'),
+('999ccc99-3333-4444-5555-666666666669', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2024, 2, 'Member', 'active', 'Projects'),
+('999ccc99-3333-4444-5555-66666666666a', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2025, 1, 'Member', 'active', 'Projects'),
+('999ccc99-3333-4444-5555-66666666666b', '079a180b-709f-427c-bc6b-036a11a4398d', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2023, 2025, 2, 'Member', 'active', 'Projects'),
+
+-- Eve (batch 2021) - has records from 2021 to 2025
+-- LexCorp as Admin
+('aaabbba0-4444-5555-6666-777777777777', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2021, 1, 'Member', 'active', 'Human Resources'),
+('aaabbba0-4444-5555-6666-777777777778', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2021, 2, 'Member', 'active', 'Human Resources'),
+('aaabbba0-4444-5555-6666-777777777779', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2022, 1, 'Vice President', 'active', 'Executive'),
+('aaabbba0-4444-5555-6666-77777777777a', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2022, 2, 'Vice President', 'active', 'Executive'),
+('aaabbba0-4444-5555-6666-77777777777b', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2023, 1, 'Advisor', 'active', 'Executive'),
+('aaabbba0-4444-5555-6666-77777777777c', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', 1, 2021, 2023, 2, 'Advisor', 'active', 'Executive'),
+('aaabbba0-4444-5555-6666-77777777777d', 'b1d690a2-1128-43d7-91d6-cf99a2b7dfae', 'c5d2e3f4-a1b2-c3d4-e5f6-a1b2c3d4e5f6', NULL, 2021, 2024, 1, NULL, 'alumni', NULL)
 ON CONFLICT (id) DO NOTHING;

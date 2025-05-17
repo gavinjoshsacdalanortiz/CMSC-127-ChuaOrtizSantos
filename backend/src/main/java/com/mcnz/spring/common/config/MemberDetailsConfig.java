@@ -34,7 +34,7 @@ public class MemberDetailsConfig {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
             List<MemberRolesProjection> membershipProjections = memberOrgRoleRepository
-                    .findRolesByMemberId(member.getMemberId());
+                    .findLatestOrganizationRolesForMember(member.getMemberId());
 
             Map<String, Map<String, String>> orgRoleAndPositionMap = new HashMap<>();
             if (membershipProjections != null) {

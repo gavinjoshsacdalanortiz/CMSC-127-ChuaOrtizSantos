@@ -2,6 +2,8 @@ package com.mcnz.spring.membership.payload;
 
 import java.util.UUID;
 
+import com.mcnz.spring.status.Status;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class MembershipDetails {
@@ -24,7 +26,11 @@ public class MembershipDetails {
     private String email;
 
     @NotBlank
-    private String batch;
+    private Integer batch;
+
+    private Integer year;
+
+    private Integer semester;
 
     @NotBlank
     private String committee;
@@ -78,12 +84,28 @@ public class MembershipDetails {
         this.email = email;
     }
 
-    public String getBatch() {
+    public Integer getBatch() {
         return batch;
     }
 
-    public void setBatch(String batch) {
+    public void setBatch(Integer batch) {
         this.batch = batch;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
     }
 
     public String getCommittee() {
@@ -125,7 +147,8 @@ public class MembershipDetails {
     }
 
     public MembershipDetails(UUID member_id, String firstName, String lastName, String gender, String degreeProgram,
-            String email, String batch, String committee, String position, String status) {
+            String email, Integer batch, Integer year, Integer semester, String committee, String position,
+            String status) {
         this.member_id = member_id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -133,6 +156,8 @@ public class MembershipDetails {
         this.degreeProgram = degreeProgram;
         this.email = email;
         this.batch = batch;
+        this.year = year;
+        this.semester = semester;
         this.committee = committee;
         this.position = position;
         this.status = status;

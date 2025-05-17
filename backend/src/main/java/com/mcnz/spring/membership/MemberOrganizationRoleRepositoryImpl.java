@@ -26,17 +26,39 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
             String status,
             String gender,
             String degreeProgram,
+            Integer batch,
+            Integer batchStart,
+            Integer batchEnd,
             Integer year,
+            Integer yearStart,
+            Integer yearEnd,
+            Integer semester,
+            Integer semesterStart,
+            Integer semesterEnd,
             String sortBy,
             String sortDirection) {
 
-        StringBuilder sql = new StringBuilder(
-                "SELECT m.member_id, first_name, last_name, gender, degree_program, email, batch, committee, position, status "
-                        +
-                        "FROM member_organization_role mor " +
-                        "JOIN role r ON mor.role_id = r.role_id " +
-                        "JOIN member m ON mor.member_id = m.member_id " +
-                        "WHERE mor.organization_id = :organizationId");
+        boolean filteringByYearSemester = (year != null && semester != null) ||
+                yearStart != null || yearEnd != null ||
+                semesterStart != null || semesterEnd != null;
+
+        boolean usingCustomSort = sortBy != null && !sortBy.isBlank();
+        boolean useDistinctLatestOnly = !filteringByYearSemester && !usingCustomSort;
+
+        StringBuilder sql = new StringBuilder();
+
+        if (useDistinctLatestOnly) {
+            sql.append("SELECT DISTINCT ON (m.member_id) ");
+        } else {
+            sql.append("SELECT ");
+        }
+
+        sql.append("m.member_id, first_name, last_name, gender, degree_program, email,  ")
+                .append("mor.batch, mor.year, mor.semester, mor.committee, mor.position, mor.status ")
+                .append("FROM member_organization_role mor ")
+                .append("JOIN role r ON mor.role_id = r.role_id ")
+                .append("JOIN member m ON mor.member_id = m.member_id ")
+                .append("WHERE mor.organization_id = :organizationId");
 
         if (position != null)
             sql.append(" AND mor.position = :position");
@@ -48,25 +70,49 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
             sql.append(" AND m.gender = :gender");
         if (degreeProgram != null)
             sql.append(" AND m.degree_program = :degreeProgram");
-        if (year != null)
-            sql.append(" AND mor.batch = :year");
 
-        // Allowed columns for sorting to prevent SQL injection
-        List<String> allowedSortFields = List.of(
-                "position", "status", "committee", "batch", "firstName", "lastName", "gender", "degreeProgram");
-        List<String> allowedDirections = List.of("asc", "desc");
+        if (batch != null) {
+            sql.append(" AND mor.batch = :batch");
+        } else {
+            if (batchStart != null)
+                sql.append(" AND mor.batch >= :batchStart");
+            if (batchEnd != null)
+                sql.append(" AND mor.batch <= :batchEnd");
+        }
 
-        if (sortBy != null && allowedSortFields.contains(sortBy.toLowerCase())) {
-            String direction = (sortDirection != null && allowedDirections.contains(sortDirection.toLowerCase()))
-                    ? sortDirection
-                    : "asc"; // default to ASC
+        if (year != null && semester != null) {
+            sql.append(" AND mor.year = :year AND mor.semester = :semester");
+        } else if (yearStart != null && semesterStart != null && yearEnd != null && semesterEnd != null) {
+            sql.append(
+                    " AND (mor.year * 10 + mor.semester) BETWEEN (:yearStart * 10 + :semesterStart) AND (:yearEnd * 10 + :semesterEnd)");
+        } else if (yearStart != null && semesterStart != null) {
+            sql.append(" AND (mor.year * 10 + mor.semester) >= (:yearStart * 10 + :semesterStart)");
+        } else if (yearEnd != null && semesterEnd != null) {
+            sql.append(" AND (mor.year * 10 + mor.semester) <= (:yearEnd * 10 + :semesterEnd)");
+        } else if (yearStart != null) {
+            sql.append(" AND mor.year >= :yearStart");
+        } else if (yearEnd != null) {
+            sql.append(" AND mor.year <= :yearEnd");
+        }
 
-            sql.append(" ORDER BY ").append(sortBy).append(" ").append(direction.toUpperCase());
+        if (useDistinctLatestOnly) {
+            sql.append(" ORDER BY m.member_id, (mor.year * 10 + mor.semester) DESC");
+        } else if (usingCustomSort) {
+            List<String> allowedSortFields = List.of("position", "status", "committee", "batch", "semester",
+                    "first_name", "last_name", "gender", "degree_program", "year");
+            List<String> allowedDirections = List.of("asc", "desc");
+
+            if (allowedSortFields.contains(sortBy.toLowerCase())) {
+                String direction = (sortDirection != null && allowedDirections.contains(sortDirection.toLowerCase()))
+                        ? sortDirection
+                        : "asc";
+                sql.append(" ORDER BY ").append(sortBy).append(" ").append(direction.toUpperCase());
+            }
         }
 
         Query query = entityManager.createNativeQuery(sql.toString());
-        query.setParameter("organizationId", organizationId);
 
+        query.setParameter("organizationId", organizationId);
         if (position != null)
             query.setParameter("position", position);
         if (committee != null)
@@ -77,24 +123,41 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
             query.setParameter("gender", gender);
         if (degreeProgram != null)
             query.setParameter("degreeProgram", degreeProgram);
-        if (year != null)
-            query.setParameter("year", year.toString());
+        if (batch != null)
+            query.setParameter("batch", batch);
+        if (batchStart != null)
+            query.setParameter("batchStart", batchStart);
+        if (batchEnd != null)
+            query.setParameter("batchEnd", batchEnd);
+        if (year != null && semester != null) {
+            query.setParameter("year", year);
+            query.setParameter("semester", semester);
+        }
+        if (yearStart != null)
+            query.setParameter("yearStart", yearStart);
+        if (semesterStart != null)
+            query.setParameter("semesterStart", semesterStart);
+        if (yearEnd != null)
+            query.setParameter("yearEnd", yearEnd);
+        if (semesterEnd != null)
+            query.setParameter("semesterEnd", semesterEnd);
 
         List<Object[]> rows = query.getResultList();
 
         return rows.stream()
                 .map(row -> new MembershipDetails(
-                        (UUID) row[0],
-                        (String) row[1],
-                        (String) row[2],
-                        (String) row[3],
-                        (String) row[4],
-                        (String) row[5],
-                        (String) row[6],
-                        (String) row[7],
-                        (String) row[8],
-                        (String) row[9]))
+                        (UUID) row[0], // Member Id
+                        (String) row[1], // First name
+                        (String) row[2], // Last name
+                        (String) row[3], // Gender
+                        (String) row[4], // Degree Program
+                        (String) row[5], // email
+                        (Integer) row[6], // batch
+                        (Integer) row[7], // year
+                        (Integer) row[8], // semester
+                        (String) row[9], // committee
+                        (String) row[10], // position
+                        (String) row[11])) // status
                 .toList();
     }
-
 }
