@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,16 +42,30 @@ public class MemberOrganizationRoleController {
         @GetMapping
         @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
         public ResponseEntity<List<MembershipDetails>> getAllMembersInOrganization(
-                        @PathVariable UUID organizationId) {
+                        @PathVariable UUID organizationId,
+                        @RequestParam(required = false) String position,
+                        @RequestParam(required = false) String committee,
+                        @RequestParam(required = false) String status,
+                        @RequestParam(required = false) String gender,
+                        @RequestParam(required = false) String degreeProgram,
+                        @RequestParam(required = false) Integer year) {
+
                 // if (!organizationRepository.existsById(organizationId)) {
                 // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 // "Organization not found with ID: " + organizationId);
                 // }
 
-                List<MembershipDetails> memberships = memberOrganizationRoleRepository
-                                .findMembersByOrganizationId(organizationId);
+                List<MembershipDetails> members = memberOrganizationRoleRepository
+                                .findMembersByOrganizationIdAndFilters(
+                                                organizationId,
+                                                position,
+                                                committee,
+                                                status,
+                                                gender,
+                                                degreeProgram,
+                                                year);
 
-                return ResponseEntity.ok(memberships);
+                return ResponseEntity.ok(members);
         }
 
         @GetMapping("/{memberId}")
@@ -106,7 +121,7 @@ public class MemberOrganizationRoleController {
                 // if (!organizationRepository.existsById(organizationId)) {
                 // throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 // "Organization not found with ID: " + organizationId);
-                // }
+                // }`
 
                 Optional<Member> member = memberRepository
                                 .findByEmail(membershipDetails.getEmail());

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/fees")
@@ -33,21 +34,21 @@ public class FeeController {
     public ResponseEntity<List<Fee>> getFeesByMemberId(@PathVariable Long memberId) {
         List<Fee> fees = feeRepository.findByMemberId(memberId);
         return new ResponseEntity<>(fees, HttpStatus.OK);
-}
+    }
 
     @GetMapping("/organization/{organizationId}")
     public ResponseEntity<List<Fee>> getFeesByOrganizationId(@PathVariable UUID organizationId) {
         List<Fee> fees = feeRepository.findByOrganizationId(organizationId);
         return new ResponseEntity<>(fees, HttpStatus.OK);
-}
+    }
 
     @GetMapping("/filter")
     public ResponseEntity<List<Fee>> filterFees(
             @RequestParam(required = false) String semester,
             @RequestParam(required = false) String academicYear) {
-        
+
         List<Fee> fees;
-        
+
         if (semester != null && academicYear != null) {
             fees = feeRepository.findBySemesterAndAcademicYear(semester, academicYear);
         } else if (semester != null) {
@@ -57,7 +58,7 @@ public class FeeController {
         } else {
             fees = feeRepository.findAll();
         }
-        
+
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
 
@@ -71,9 +72,8 @@ public class FeeController {
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
-                    fee.getOrganization().getId()
-            );
-            
+                    fee.getOrganization().getOrganizationId());
+
             if (result > 0) {
                 return new ResponseEntity<>("Fee created successfully", HttpStatus.CREATED);
             } else {
@@ -95,9 +95,8 @@ public class FeeController {
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
-                    fee.getOrganization().getId()
-            );
-            
+                    fee.getOrganization().getOrganizationId());
+
             if (result > 0) {
                 return new ResponseEntity<>("Fee updated successfully", HttpStatus.OK);
             } else {
@@ -112,7 +111,7 @@ public class FeeController {
     public ResponseEntity<String> deleteFee(@PathVariable Long feeId) {
         try {
             int result = feeRepository.delete(feeId);
-            
+
             if (result > 0) {
                 return new ResponseEntity<>("Fee deleted successfully", HttpStatus.OK);
             } else {
