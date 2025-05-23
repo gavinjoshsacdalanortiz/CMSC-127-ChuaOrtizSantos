@@ -142,7 +142,6 @@ public class MemberOrganizationRoleController {
                                 organizationId,
                                 role,
                                 membershipDetails.getPosition(),
-                                membershipDetails.getBatch(),
                                 membershipDetails.getYear(),
                                 membershipDetails.getSemester(),
                                 Status.active,

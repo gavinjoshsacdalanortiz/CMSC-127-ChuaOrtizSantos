@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 // TODO: edit options once backend is good
 const FeesDashboard = () => {
   const [filters, setFilters] = useState<FeeQueryOptions>(
-    {} as FeeQueryOptions,
+    {} as FeeQueryOptions
   );
 
   const { fees, pending, error } = useFees(filters);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
@@ -55,8 +55,8 @@ const FeesDashboard = () => {
             onChange={handleFilterChange}
           >
             <option>2022-2023</option>
-            <option>2023-2024</option>
-            <option>2024-2025</option>
+            <option>2023-2025</option>
+            <option>2025-2025</option>
           </select>
         </div>
       </div>

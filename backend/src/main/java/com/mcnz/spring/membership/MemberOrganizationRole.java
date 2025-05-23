@@ -43,14 +43,13 @@ public class MemberOrganizationRole {
 
     private String committee;
 
-    public MemberOrganizationRole(UUID member_id, UUID organization_id, Integer role_id, String position, Integer batch,
+    public MemberOrganizationRole(UUID member_id, UUID organization_id, Integer role_id, String position,
             Integer year, Integer semester,
             Status status, String committee) {
         this.member_id = member_id;
         this.organization_id = organization_id;
         this.role_id = role_id;
         this.position = position;
-        this.batch = batch;
         this.year = year;
         this.semester = semester;
         this.status = status;
