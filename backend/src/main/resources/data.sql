@@ -1,5 +1,21 @@
 -- data.sql -- Seeder file for initial development data
 
+
+-- ==================================================
+-- 0. Clear Existing Data (Respect Foreign Key Constraints)
+-- ==================================================
+DROP TRIGGER IF EXISTS trg_set_batch ON member_organization_role;
+DROP FUNCTION IF EXISTS set_batch_based_on_first_year();
+
+DROP TABLE IF EXISTS member_organization_role;
+DROP TABLE IF EXISTS fee;
+DROP TABLE IF EXISTS member;
+DROP TABLE IF EXISTS organization;
+DROP TABLE IF EXISTS role;
+
+DROP TYPE IF EXISTS role_name_enum;
+DROP TYPE IF EXISTS member_status_enum;
+
 DO '
 BEGIN
     IF NOT EXISTS (
@@ -9,7 +25,7 @@ BEGIN
     END IF;
 
     IF NOT EXISTS (
-        SELECT 1 FROM pg_type WHERE typname =''member_status_enum''
+        SELECT 1 FROM pg_type WHERE typname = ''member_status_enum''
     ) THEN
         CREATE TYPE member_status_enum AS ENUM (''active'', ''inactive'', ''suspended'', ''expelled'', ''alumni'');
     END IF;
@@ -73,16 +89,6 @@ CREATE TABLE IF NOT EXISTS fee (
 );
 
 
--- ==================================================
--- 0. Clear Existing Data (Respect Foreign Key Constraints)
--- ==================================================
--- DROP TRIGGER IF EXISTS trg_set_batch ON member_organization_role;
--- DROP FUNCTION IF EXISTS set_batch_based_on_first_year();
-
--- DELETE FROM member_organization_role;
--- DELETE FROM member;
--- DELETE FROM organization;
--- DELETE FROM role;
 
 -- ==================================================
 -- 1. Populate Roles Table (Security Roles)
