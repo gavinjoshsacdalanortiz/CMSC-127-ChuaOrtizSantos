@@ -26,34 +26,34 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         List<Fee> findByMemberId(@Param("memberId") UUID memberId);
 
         @Query(value = "SELECT * FROM fees WHERE semester = :semester", nativeQuery = true)
-        List<Fee> findBySemester(@Param("semester") String semester);
+        List<Fee> findBySemester(@Param("semester") Integer semester);
 
-        @Query(value = "SELECT * FROM fees WHERE academic_year = :academicYear", nativeQuery = true)
-        List<Fee> findByAcademicYear(@Param("academicYear") String academicYear);
+        @Query(value = "SELECT * FROM fees WHERE year = :year", nativeQuery = true)
+        List<Fee> findByYear(@Param("year") Integer year);
 
-        @Query(value = "SELECT * FROM fees WHERE semester = :semester AND academic_year = :academicYear", nativeQuery = true)
-        List<Fee> findBySemesterAndAcademicYear(@Param("semester") String semester,
-                        @Param("academicYear") String academicYear);
+        @Query(value = "SELECT * FROM fees WHERE semester = :semester AND year = :year", nativeQuery = true)
+        List<Fee> findBySemesterAndYear(@Param("semester") Integer semester,
+                        @Param("year") Integer year);
 
         @Query(value = "SELECT * FROM fees WHERE id = :organizationId", nativeQuery = true)
         List<Fee> findByOrganizationId(@Param("organizationId") UUID organizationId);
 
         @Modifying
         @Transactional
-        @Query(value = "INSERT INTO fees (amount, semester, academic_year, due_date, date_paid, member_id, id) " +
-                        "VALUES (:amount, :semester, :academicYear, :dueDate, :datePaid, :memberId, :organizationId)", nativeQuery = true)
-        int save(@Param("amount") BigDecimal amount, @Param("semester") String semester,
-                        @Param("academicYear") String academicYear, @Param("dueDate") LocalDate dueDate,
+        @Query(value = "INSERT INTO fees (amount, semester, year, due_date, date_paid, member_id, id) " +
+                        "VALUES (:amount, :semester, :year, :dueDate, :datePaid, :memberId, :organizationId)", nativeQuery = true)
+        int save(@Param("amount") BigDecimal amount, @Param("semester") Integer semester,
+                        @Param("year") Integer year, @Param("dueDate") LocalDate dueDate,
                         @Param("datePaid") LocalDate datePaid, @Param("memberId") UUID memberId,
                         @Param("organizationId") UUID organizationId);
 
         @Modifying
         @Transactional
-        @Query(value = "UPDATE fees SET amount = :amount, semester = :semester, academic_year = :academicYear, " +
+        @Query(value = "UPDATE fees SET amount = :amount, semester = :semester, year = :year, " +
                         "due_date = :dueDate, date_paid = :datePaid, member_id = :memberId, id = :organizationId " +
                         "WHERE fee_id = :feeId", nativeQuery = true)
         int update(@Param("feeId") UUID feeId, @Param("amount") BigDecimal amount,
-                        @Param("semester") String semester, @Param("academicYear") String academicYear,
+                        @Param("semester") Integer semester, @Param("year") Integer year,
                         @Param("dueDate") LocalDate dueDate, @Param("datePaid") LocalDate datePaid,
                         @Param("memberId") UUID memberId, @Param("organizationId") UUID organizationId);
 

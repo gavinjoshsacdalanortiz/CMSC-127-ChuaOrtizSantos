@@ -22,10 +22,10 @@ public class Fee {
     private BigDecimal amount;
 
     @Column(nullable = false)
-    private String semester;
+    private Integer semester;
 
     @Column(nullable = false)
-    private String academicYear;
+    private Integer year;
 
     @Column(nullable = false)
     private LocalDate dueDate;
@@ -41,11 +41,11 @@ public class Fee {
     public Fee() {
     }
 
-    public Fee(BigDecimal amount, String semester, String academicYear,
+    public Fee(BigDecimal amount, Integer semester, Integer year,
             LocalDate dueDate, LocalDate datePaid, UUID memberId, UUID organizationId) {
         this.amount = amount;
         this.semester = semester;
-        this.academicYear = academicYear;
+        this.year = year;
         this.dueDate = dueDate;
         this.datePaid = datePaid;
         this.memberId = memberId;
@@ -68,20 +68,20 @@ public class Fee {
         this.amount = amount;
     }
 
-    public String getSemester() {
+    public Integer getSemester() {
         return semester;
     }
 
-    public void setSemester(String semester) {
+    public void setSemester(Integer semester) {
         this.semester = semester;
     }
 
-    public String getAcademicYear() {
-        return academicYear;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setAcademicYear(String academicYear) {
-        this.academicYear = academicYear;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     // ---correction----

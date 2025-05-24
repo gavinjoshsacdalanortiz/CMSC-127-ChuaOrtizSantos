@@ -43,17 +43,17 @@ public class FeeController {
 
     @GetMapping("/filter")
     public ResponseEntity<List<Fee>> filterFees(
-            @RequestParam(required = false) String semester,
-            @RequestParam(required = false) String academicYear) {
+            @RequestParam(required = false) Integer semester,
+            @RequestParam(required = false) Integer year) {
 
         List<Fee> fees;
 
-        if (semester != null && academicYear != null) {
-            fees = feeRepository.findBySemesterAndAcademicYear(semester, academicYear);
+        if (semester != null && year != null) {
+            fees = feeRepository.findBySemesterAndYear(semester, year);
         } else if (semester != null) {
             fees = feeRepository.findBySemester(semester);
-        } else if (academicYear != null) {
-            fees = feeRepository.findByAcademicYear(academicYear);
+        } else if (year != null) {
+            fees = feeRepository.findByYear(year);
         } else {
             fees = feeRepository.findAll();
         }
@@ -67,7 +67,7 @@ public class FeeController {
             int result = feeRepository.save(
                     fee.getAmount(),
                     fee.getSemester(),
-                    fee.getAcademicYear(),
+                    fee.getYear(),
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
@@ -90,7 +90,7 @@ public class FeeController {
                     feeId,
                     fee.getAmount(),
                     fee.getSemester(),
-                    fee.getAcademicYear(),
+                    fee.getYear(),
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
