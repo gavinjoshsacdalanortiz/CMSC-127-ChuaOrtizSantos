@@ -11,6 +11,55 @@ DELETE FROM member;
 DELETE FROM organization;
 DELETE FROM role;
 
+DO '
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = ''fk_fee_member_id''
+    ) THEN
+        ALTER TABLE "fee"
+        ADD CONSTRAINT fk_fee_member_id
+        FOREIGN KEY ("member_id") REFERENCES "member" ("member_id");
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = ''fk_fee_organization_id''
+    ) THEN
+        ALTER TABLE "fee"
+        ADD CONSTRAINT fk_fee_organization_id
+        FOREIGN KEY ("organization_id") REFERENCES "organization" ("organization_id");
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = ''fk_member_organization_role_member_id''
+    ) THEN
+        ALTER TABLE "member_organization_role"
+        ADD CONSTRAINT fk_member_organization_role_member_id
+        FOREIGN KEY ("member_id") REFERENCES "member" ("member_id");
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = ''fk_member_organization_role_organization_id''
+    ) THEN
+        ALTER TABLE "member_organization_role"
+        ADD CONSTRAINT fk_member_organization_role_organization_id
+        FOREIGN KEY ("organization_id") REFERENCES "organization" ("organization_id");
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = ''fk_member_organization_role_role_id''
+    ) THEN
+        ALTER TABLE "member_organization_role"
+        ADD CONSTRAINT fk_member_organization_role_role_id
+        FOREIGN KEY ("role_id") REFERENCES "role" ("role_id");
+    END IF;
+END
+';
+
 -- ==================================================
 -- 1. Populate Roles Table (Security Roles)
 -- ==================================================
@@ -195,24 +244,24 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 -- ==================================================
 -- 5. Recreate Trigger for 'batch' in member_organization_role
 -- ==================================================
--- CREATE OR REPLACE FUNCTION set_batch_based_on_first_year()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     SELECT MIN(mor.year)
---     INTO NEW.batch
---     FROM member_organization_role mor
---     WHERE mor.member_id = NEW.member_id
---       AND mor.organization_id = NEW.organization_id;
+CREATE OR REPLACE FUNCTION set_batch_based_on_first_year()
+RETURNS TRIGGER AS '
+BEGIN
+    SELECT MIN(mor.year)
+    INTO NEW.batch
+    FROM member_organization_role mor
+    WHERE mor.member_id = NEW.member_id
+      AND mor.organization_id = NEW.organization_id;
 
---     IF NEW.batch IS NULL THEN
---         NEW.batch := NEW.year;
---     END IF;
+    IF NEW.batch IS NULL THEN
+        NEW.batch := NEW.year;
+    END IF;
 
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
+    RETURN NEW;
+END;
+' LANGUAGE plpgsql;
 
--- CREATE TRIGGER trg_set_batch
--- BEFORE INSERT ON member_organization_role
--- FOR EACH ROW
--- EXECUTE FUNCTION set_batch_based_on_first_year();
+CREATE TRIGGER trg_set_batch
+BEFORE INSERT ON member_organization_role
+FOR EACH ROW
+EXECUTE FUNCTION set_batch_based_on_first_year();

@@ -23,14 +23,14 @@ public class FeeController {
     }
 
     @GetMapping("/{feeId}")
-    public ResponseEntity<Fee> getFeeById(@PathVariable Long feeId) {
+    public ResponseEntity<Fee> getFeeById(@PathVariable UUID feeId) {
         Optional<Fee> fee = feeRepository.findById(feeId);
         return fee.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<Fee>> getFeesByMemberId(@PathVariable Long memberId) {
+    public ResponseEntity<List<Fee>> getFeesByMemberId(@PathVariable UUID memberId) {
         List<Fee> fees = feeRepository.findByMemberId(memberId);
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
@@ -71,7 +71,7 @@ public class FeeController {
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
-                    fee.getOrganization().getOrganizationId());
+                    fee.getOrganizationId());
 
             if (result > 0) {
                 return new ResponseEntity<>("Fee created successfully", HttpStatus.CREATED);
@@ -84,7 +84,7 @@ public class FeeController {
     }
 
     @PutMapping("/{feeId}")
-    public ResponseEntity<String> updateFee(@PathVariable Long feeId, @RequestBody Fee fee) {
+    public ResponseEntity<String> updateFee(@PathVariable UUID feeId, @RequestBody Fee fee) {
         try {
             int result = feeRepository.update(
                     feeId,
@@ -94,7 +94,7 @@ public class FeeController {
                     fee.getDueDate(),
                     fee.getDatePaid(),
                     fee.getMemberId(),
-                    fee.getOrganization().getOrganizationId());
+                    fee.getOrganizationId());
 
             if (result > 0) {
                 return new ResponseEntity<>("Fee updated successfully", HttpStatus.OK);
@@ -107,7 +107,7 @@ public class FeeController {
     }
 
     @DeleteMapping("/{feeId}")
-    public ResponseEntity<String> deleteFee(@PathVariable Long feeId) {
+    public ResponseEntity<String> deleteFee(@PathVariable UUID feeId) {
         try {
             int result = feeRepository.delete(feeId);
 

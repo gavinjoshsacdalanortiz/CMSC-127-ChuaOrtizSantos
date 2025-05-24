@@ -1,53 +1,62 @@
 package com.mcnz.spring.fee;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import com.mcnz.spring.organization.Organization;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
-@Table(name = "fees")
+@Table(name = "fee")
 public class Fee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feeId;
-    private BigDecimal amount;
-    private String semester;
-    private String academicYear;
-    private LocalDate dueDate;
-    private LocalDate datePaid;
-    private Long memberId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID feeId;
 
-    @ManyToOne
-    @JoinColumn(name = "id")
-    private Organization organization;
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private String semester;
+
+    @Column(nullable = false)
+    private String academicYear;
+
+    @Column(nullable = false)
+    private LocalDate dueDate;
+
+    private LocalDate datePaid;
+
+    @Column(nullable = false)
+    private UUID memberId;
+
+    @Column(nullable = false)
+    private UUID organizationId;
 
     public Fee() {
     }
 
     public Fee(BigDecimal amount, String semester, String academicYear,
-            LocalDate dueDate, LocalDate datePaid, Long memberId, Organization organization) {
+            LocalDate dueDate, LocalDate datePaid, UUID memberId, UUID organizationId) {
         this.amount = amount;
         this.semester = semester;
         this.academicYear = academicYear;
         this.dueDate = dueDate;
         this.datePaid = datePaid;
         this.memberId = memberId;
-        this.organization = organization;
+        this.organizationId = organizationId;
     }
 
-    public Long getFeeId() {
+    public UUID getFeeId() {
         return feeId;
     }
 
-    public void setFeeId(Long feeId) {
+    public void setFeeId(UUID feeId) {
         this.feeId = feeId;
     }
 
@@ -94,19 +103,19 @@ public class Fee {
         this.datePaid = datePaid;
     }
 
-    public Long getMemberId() {
+    public UUID getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(Long memberId) {
+    public void setMemberId(UUID memberId) {
         this.memberId = memberId;
     }
 
-    public Organization getOrganization() {
-        return organization;
+    public UUID getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public void setOrganizationId(UUID organizationId) {
+        this.organizationId = organizationId;
     }
 }

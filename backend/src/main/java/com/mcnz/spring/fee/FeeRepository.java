@@ -14,16 +14,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FeeRepository extends JpaRepository<Fee, Long> {
+public interface FeeRepository extends JpaRepository<Fee, UUID> {
 
         @Query(value = "SELECT * FROM fees", nativeQuery = true)
         List<Fee> findAll();
 
         @Query(value = "SELECT * FROM fees WHERE fee_id = :feeId", nativeQuery = true)
-        Optional<Fee> findById(@Param("feeId") Long feeId);
+        Optional<Fee> findById(@Param("feeId") UUID feeId);
 
         @Query(value = "SELECT * FROM fees WHERE member_id = :memberId", nativeQuery = true)
-        List<Fee> findByMemberId(@Param("memberId") Long memberId);
+        List<Fee> findByMemberId(@Param("memberId") UUID memberId);
 
         @Query(value = "SELECT * FROM fees WHERE semester = :semester", nativeQuery = true)
         List<Fee> findBySemester(@Param("semester") String semester);
@@ -44,7 +44,7 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
                         "VALUES (:amount, :semester, :academicYear, :dueDate, :datePaid, :memberId, :organizationId)", nativeQuery = true)
         int save(@Param("amount") BigDecimal amount, @Param("semester") String semester,
                         @Param("academicYear") String academicYear, @Param("dueDate") LocalDate dueDate,
-                        @Param("datePaid") LocalDate datePaid, @Param("memberId") Long memberId,
+                        @Param("datePaid") LocalDate datePaid, @Param("memberId") UUID memberId,
                         @Param("organizationId") UUID organizationId);
 
         @Modifying
@@ -52,15 +52,15 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
         @Query(value = "UPDATE fees SET amount = :amount, semester = :semester, academic_year = :academicYear, " +
                         "due_date = :dueDate, date_paid = :datePaid, member_id = :memberId, id = :organizationId " +
                         "WHERE fee_id = :feeId", nativeQuery = true)
-        int update(@Param("feeId") Long feeId, @Param("amount") BigDecimal amount,
+        int update(@Param("feeId") UUID feeId, @Param("amount") BigDecimal amount,
                         @Param("semester") String semester, @Param("academicYear") String academicYear,
                         @Param("dueDate") LocalDate dueDate, @Param("datePaid") LocalDate datePaid,
-                        @Param("memberId") Long memberId, @Param("organizationId") UUID organizationId);
+                        @Param("memberId") UUID memberId, @Param("organizationId") UUID organizationId);
 
         @Modifying
         @Transactional
         @Query(value = "DELETE FROM fees WHERE fee_id = :feeId", nativeQuery = true)
-        int delete(@Param("feeId") Long feeId);
+        int delete(@Param("feeId") UUID feeId);
 
         @Query(value = "SELECT COUNT(*) FROM fees", nativeQuery = true)
         long count();
