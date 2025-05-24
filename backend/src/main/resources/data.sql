@@ -1,64 +1,88 @@
 -- data.sql -- Seeder file for initial development data
 
--- ==================================================
--- 0. Clear Existing Data (Respect Foreign Key Constraints)
--- ==================================================
-DROP TRIGGER IF EXISTS trg_set_batch ON member_organization_role;
-DROP FUNCTION IF EXISTS set_batch_based_on_first_year();
-
-DELETE FROM member_organization_role;
-DELETE FROM member;
-DELETE FROM organization;
-DELETE FROM role;
-
 DO '
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = ''fk_fee_member_id''
+        SELECT 1 FROM pg_type WHERE typname = ''role_name_enum''
     ) THEN
-        ALTER TABLE "fee"
-        ADD CONSTRAINT fk_fee_member_id
-        FOREIGN KEY ("member_id") REFERENCES "member" ("member_id");
+        CREATE TYPE role_name_enum AS ENUM (''ROLE_MEMBER'', ''ROLE_ADMIN'');
     END IF;
 
     IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = ''fk_fee_organization_id''
+        SELECT 1 FROM pg_type WHERE typname =''member_status_enum''
     ) THEN
-        ALTER TABLE "fee"
-        ADD CONSTRAINT fk_fee_organization_id
-        FOREIGN KEY ("organization_id") REFERENCES "organization" ("organization_id");
+        CREATE TYPE member_status_enum AS ENUM (''active'', ''inactive'', ''suspended'', ''expelled'', ''alumni'');
     END IF;
-
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = ''fk_member_organization_role_member_id''
-    ) THEN
-        ALTER TABLE "member_organization_role"
-        ADD CONSTRAINT fk_member_organization_role_member_id
-        FOREIGN KEY ("member_id") REFERENCES "member" ("member_id");
-    END IF;
-
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = ''fk_member_organization_role_organization_id''
-    ) THEN
-        ALTER TABLE "member_organization_role"
-        ADD CONSTRAINT fk_member_organization_role_organization_id
-        FOREIGN KEY ("organization_id") REFERENCES "organization" ("organization_id");
-    END IF;
-
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = ''fk_member_organization_role_role_id''
-    ) THEN
-        ALTER TABLE "member_organization_role"
-        ADD CONSTRAINT fk_member_organization_role_role_id
-        FOREIGN KEY ("role_id") REFERENCES "role" ("role_id");
-    END IF;
-END
+END;
 ';
+
+CREATE TABLE IF NOT EXISTS member (
+    member_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    gender VARCHAR(255),
+    degree_program VARCHAR(255) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS organization (
+    organization_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS role (
+    role_id SERIAL PRIMARY KEY,
+    name role_name_enum UNIQUE NOT NULL
+
+    CONSTRAINT chk_role_name CHECK (name IN ('ROLE_MEMBER', 'ROLE_ADMIN'))
+);
+
+CREATE TABLE IF NOT EXISTS member_organization_role (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    member_id UUID NOT NULL,
+    organization_id UUID NOT NULL,
+    role_id INTEGER,
+    position VARCHAR(255),
+    batch INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    semester INTEGER NOT NULL,
+    status member_status_enum NOT NULL,
+    committee VARCHAR(255),
+
+    CONSTRAINT fk_member FOREIGN KEY (member_id) REFERENCES member (member_id),
+    CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organization (organization_id),
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role (role_id),
+    CONSTRAINT chk_status CHECK (status IN ('active', 'inactive', 'suspended', 'expelled', 'alumni'))
+);
+
+CREATE TABLE IF NOT EXISTS fee (
+    fee_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    amount NUMERIC NOT NULL,
+    semester INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    due_date DATE NOT NULL,
+    date_paid DATE,
+    member_id UUID NOT NULL,
+    organization_id UUID NOT NULL,
+
+    CONSTRAINT fk_fee_member FOREIGN KEY (member_id) REFERENCES member (member_id),
+    CONSTRAINT fk_fee_organization FOREIGN KEY (organization_id) REFERENCES organization (organization_id)
+);
+
+
+-- ==================================================
+-- 0. Clear Existing Data (Respect Foreign Key Constraints)
+-- ==================================================
+-- DROP TRIGGER IF EXISTS trg_set_batch ON member_organization_role;
+-- DROP FUNCTION IF EXISTS set_batch_based_on_first_year();
+
+-- DELETE FROM member_organization_role;
+-- DELETE FROM member;
+-- DELETE FROM organization;
+-- DELETE FROM role;
 
 -- ==================================================
 -- 1. Populate Roles Table (Security Roles)
@@ -130,7 +154,8 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000001', 2, 2025, 2025, 1, 'Member', 'active', 'Mobile Dev'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000001', 2, 2025, 2025, 2, 'Member', 'active', 'Mobile Dev'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000001', 2, 2025, 2025, 1, 'Member', 'active', 'Cybersecurity'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000001', 2, 2025, 2025, 2, 'Member', 'active', 'Cybersecurity');
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000001', 2, 2025, 2025, 2, 'Member', 'active', 'Cybersecurity')
+ON CONFLICT (id) DO NOTHING;
 
 -- Organization 2: Community Builders Alliance ('a1b2c3d4-e5f6-7777-8888-100000000002')
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
@@ -157,7 +182,9 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000002', 2, 2025, 2025, 1, 'Member', 'active', 'Community Engagement'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000002', 2, 2025, 2025, 2, 'Member', 'active', 'Community Engagement'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000002', 2, 2025, 2025, 1, 'Member', 'active', 'Policy Review'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000002', 2, 2025, 2025, 2, 'Member', 'active', 'Policy Review');
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000002', 2, 2025, 2025, 2, 'Member', 'active', 'Policy Review')
+ON CONFLICT (id) DO NOTHING;
+
 
 -- Organization 3: Future Leaders Network ('a1b2c3d4-e5f6-7777-8888-100000000003')
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
@@ -184,7 +211,9 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Skill Workshops'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Skill Workshops'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Guest Speaker Series'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Guest Speaker Series');
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Guest Speaker Series')
+ON CONFLICT (id) DO NOTHING;
+
 
 -- Organization 4: Creative Minds Collective ('a1b2c3d4-e5f6-7777-8888-100000000004')
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
@@ -211,7 +240,9 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Photography'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Photography'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Creative Writing'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Creative Writing');
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Creative Writing')
+ON CONFLICT (id) DO NOTHING;
+
 
 -- Organization 5: Academic Scholars Society ('a1b2c3d4-e5f6-7777-8888-100000000005')
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
@@ -238,12 +269,15 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Thesis Support Group'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Thesis Support Group'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Study Abroad Committee'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Study Abroad Committee');
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Study Abroad Committee')
+ON CONFLICT (id) DO NOTHING;
+
 
 
 -- ==================================================
 -- 5. Recreate Trigger for 'batch' in member_organization_role
 -- ==================================================
+-- Create function (replace if exists)
 CREATE OR REPLACE FUNCTION set_batch_based_on_first_year()
 RETURNS TRIGGER AS '
 BEGIN
@@ -261,7 +295,21 @@ BEGIN
 END;
 ' LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_set_batch
-BEFORE INSERT ON member_organization_role
-FOR EACH ROW
-EXECUTE FUNCTION set_batch_based_on_first_year();
+DO '
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_trigger t
+        JOIN pg_class c ON t.tgrelid = c.oid
+        WHERE t.tgname = ''trg_set_batch''
+          AND c.relname = ''member_organization_role''
+    ) THEN
+        EXECUTE ''
+            CREATE TRIGGER trg_set_batch
+            BEFORE INSERT ON member_organization_role
+            FOR EACH ROW
+            EXECUTE FUNCTION set_batch_based_on_first_year()
+        '';
+    END IF;
+END;
+';
