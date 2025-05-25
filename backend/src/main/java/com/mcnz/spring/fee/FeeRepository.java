@@ -64,4 +64,70 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
 
         @Query(value = "SELECT COUNT(*) FROM fees", nativeQuery = true)
         long count();
+
+        //find members with unpaid fees for a given organization, semester, and year
+        @Query(value = """
+        SELECT DISTINCT m.* FROM member m 
+        JOIN fees f ON m.member_id = f.member_id 
+        WHERE f.id = :organizationId 
+        AND f.semester = :semester 
+        AND f.year = :year 
+        AND f.date_paid IS NULL
+        """, nativeQuery = true)
+        List<Object[]> findMembersWithUnpaidFees(@Param("organizationId") UUID organizationId, 
+                                                @Param("semester") Integer semester, 
+                                                @Param("year") Integer year);
+
+        //find unpaid fees for a specific member across all organizations
+        @Query(value = """
+        SELECT f.*, o.organization_name FROM fees f 
+        LEFT JOIN organization o ON f.id = o.organization_id 
+        WHERE f.member_id = :memberId 
+        AND f.date_paid IS NULL
+        """, nativeQuery = true)
+        List<Object[]> findUnpaidFeesByMember(@Param("memberId") UUID memberId);
+
+        //get total paid and unpaid amounts for an organization as of a given date
+        @Query(value = """
+        SELECT 
+        COALESCE(SUM(CASE WHEN f.date_paid IS NOT NULL AND f.date_paid <= :asOfDate THEN f.amount ELSE 0 END), 0) as total_paid,
+        COALESCE(SUM(CASE WHEN f.date_paid IS NULL OR f.date_paid > :asOfDate THEN f.amount ELSE 0 END), 0) as total_unpaid
+        FROM fees f 
+        WHERE f.id = :organizationId 
+        AND f.due_date <= :asOfDate
+        """, nativeQuery = true)
+        Object[] getTotalFeesAsOfDate(@Param("organizationId") UUID organizationId, 
+                                @Param("asOfDate") LocalDate asOfDate);
+
+        //find members with highest debt for an organization in a given semester
+        @Query(value = """
+        SELECT m.*, SUM(f.amount) as total_debt 
+        FROM member m 
+        JOIN fees f ON m.member_id = f.member_id 
+        WHERE f.id = :organizationId 
+        AND f.semester = :semester 
+        AND f.year = :year 
+        AND f.date_paid IS NULL 
+        GROUP BY m.member_id, m.first_name, m.last_name, m.email, m.gender, m.degree_program, m.created_at, m.updated_at
+        ORDER BY total_debt DESC
+        """, nativeQuery = true)
+        List<Object[]> findMembersWithHighestDebt(@Param("organizationId") UUID organizationId, 
+                                                @Param("semester") Integer semester, 
+                                                @Param("year") Integer year);
+
+        //find all late payments for an organization in a given semester and year
+        @Query(value = """
+        SELECT f.*, m.first_name, m.last_name, m.email 
+        FROM fees f 
+        JOIN member m ON f.member_id = m.member_id 
+        WHERE f.id = :organizationId 
+        AND f.semester = :semester 
+        AND f.year = :year 
+        AND f.date_paid IS NOT NULL 
+        AND f.date_paid > f.due_date
+        ORDER BY f.date_paid DESC
+        """, nativeQuery = true)
+        List<Object[]> findLatePayments(@Param("organizationId") UUID organizationId, 
+                                        @Param("semester") Integer semester, 
+                                        @Param("year") Integer year);
 }
