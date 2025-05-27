@@ -176,7 +176,9 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 -- Mason: Inactive Member in Innovators Tech Guild for a *past* semester (AY 2022, 2nd Sem)
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2024, 2024,1, NULL, 'inactive', NULL),
 -- Mia: Alumni in Innovators Tech Guild for a *past* semester (AY 2021, 1st Sem)
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', NULL, 2021, 2021, 2, NULL, 'alumni', NULL),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2020, 2020, 1, 'Member', 'active', 'AI Research'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2020, 2020, 2, 'Member', 'active', 'AI Research'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', NULL, 2020, 2021, 2, NULL, 'alumni', NULL),
 
 -- 12 Memberships for AY 2024, 2nd Semester (Spring) - some changes in roles/positions
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 1, 2024,2024, 2, 'President', 'active', 'Executive'),
@@ -197,39 +199,40 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 
 -- -- Organization 2: Community Builders Alliance ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
 -- -- 12 Memberships for AY 2024, 1st Semester (Fall)
--- INSERT INTO member_organization_role (id, member_id, organization_id, role_id, year, semester, position, status, committee) VALUES
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 1, 'President', 'active', 'Executi'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 1, 'Treasurer', 'active', 'Board'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 1, 'Secretary', 'active', 'Events'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Community Service'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Fundraising Drives'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Local Partnerships'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Awareness Campaigns'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Social Media Outreach'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Recruitment'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Member', 'active', 'Grant Writing'),
--- -- Mason: Active Member in Community Builders Alliance for Fall
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 1, 'Historian', 'active', 'Archives'),
--- -- Mia: Alumni in Community Builders Alliance for a past semester (AY 2021, 2nd Sem)
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2021, 2, 'Past President', 'alumni', 'Advisory Council'),
+INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 1, 'President', 'active', 'Executi'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 1, 'Treasurer', 'active', 'Board'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 1, 'Secretary', 'active', 'Events'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Community Service'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Fundraising Drives'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Local Partnerships'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Awareness Campaigns'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Social Media Outreach'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Recruitment'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Member', 'active', 'Grant Writing'),
+-- Mason: Active Member in Community Builders Alliance for Fall
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 1, 'Historian', 'active', 'Archives'),
+-- Mia: Alumni in Community Builders Alliance for a past semester (AY 2021, 2nd Sem)
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2021, 2021, 2, 'Past President', 'alumni', 'Advisory Council'),
 
--- -- 12 Memberships for AY 2024, 2nd Semester (Spring)
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2, 'Chairperson', 'active', 'Board'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2, 'Secretary', 'active', 'Board'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2, 'Event Director', 'active', 'Events'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Team Lead', 'active', 'Community Service'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Team Lead', 'active', 'Fundraising Drives'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Coordinator', 'active', 'Local Partnerships'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Coordinator', 'active', 'Awareness Campaigns'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Manager', 'active', 'Social Media Outreach'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Lead Volunteer', 'active', 'Recruitment'),
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Grant Specialist', 'active', 'Grant Writing'),
--- -- Mason: Still active Member in Community Builders Alliance for Spring
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'Archivist', 'active', 'Archives'),
--- -- Mia remains alumni
--- -- Adding one more distinct active member for Org2 Spring
--- (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2, 'New Member Rep', 'active', 'Welcome Committee')
--- ON CONFLICT (id) DO NOTHING;
+-- 12 Memberships for AY 2024, 2024, 2nd Semester (Spring)
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 2, 'President', 'active', 'Executive'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 2, 'Treasurer', 'active', 'Executive'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 1, 2024, 2024, 2, 'Secretary', 'active', 'Executive'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Community Service'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Fundraising Drives'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Local Partnerships'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Awareness Campaigns'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Social Media Outreach'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Recruitment'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Grant Writing'),
+-- Mason: Still active Member in Community Builders Alliance for Spring
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2024, 2024, 2, 'Member', 'active', 'Archives'),
+-- Mia remains alumni
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2020, 2020, 1, 'Member', 'active', 'Recruitment'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 2, 2020, 2020, 2, 'Member', 'active', 'Recruitment'),
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', NULL, 2020, 2021, 2, NULL, 'alumni', NULL);
+
 -- ==================================================
 -- 6. Recreate Trigger for 'batch' in member_organization_role
 -- ==================================================
