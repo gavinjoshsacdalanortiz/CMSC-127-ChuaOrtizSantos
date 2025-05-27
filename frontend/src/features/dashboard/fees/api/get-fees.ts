@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Fee, FeeQueryOptions, UseFeesReturn } from "@/types/fee"; // Adjust path as needed
 import { api } from "@/lib/api-client";
 
-export function useFees(options: FeeQueryOptions = {}): UseFeesReturn {
+export function useFees(options: FeeQueryOptions = {}, organizationId : string): UseFeesReturn {
   const [fees, setFees] = useState<Fee[] | null>(null);
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -39,8 +39,8 @@ export function useFees(options: FeeQueryOptions = {}): UseFeesReturn {
       try {
         // Assuming your backend returns an object like { fees: Fee[] }
         // or if it returns Fee[] directly, change to api.get<Fee[]>
-        const response = await api.get<{ fees: Fee[] }>( // Or just `Fee[]` if your API returns an array directly
-          "/fees", // Your Spring Boot endpoint for fees
+        const response = await api.get<Fee[]>( // Or just `Fee[]` if your API returns an array directly
+          `fees/organization/${organizationId}`, // Your Spring Boot endpoint for fees
           {
             params: params, // Pass the processed params
           },
@@ -49,7 +49,7 @@ export function useFees(options: FeeQueryOptions = {}): UseFeesReturn {
         if (!isCancelled) {
           // If API returns { fees: [...] }, use response.fees
           // If API returns [...] directly, use response directly
-          setFees(response.fees);
+          setFees(response);
         }
       } catch (err) {
         console.error("useFees: Fetch failed", err);
