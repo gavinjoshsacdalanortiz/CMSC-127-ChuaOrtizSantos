@@ -1,3 +1,4 @@
+
 -- data.sql -- Seeder file for initial development data
 
 
@@ -7,8 +8,8 @@
 DROP TRIGGER IF EXISTS trg_set_batch ON member_organization_role;
 DROP FUNCTION IF EXISTS set_batch_based_on_first_year();
 
-DROP TABLE IF EXISTS member_organization_role;
 DROP TABLE IF EXISTS fee;
+DROP TABLE IF EXISTS member_organization_role;
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS organization;
 DROP TABLE IF EXISTS role;
@@ -103,10 +104,7 @@ ON CONFLICT (name) DO NOTHING;
 -- ==================================================
 INSERT INTO organization (organization_id, organization_name) VALUES
 ('a1b2c3d4-e5f6-7777-8888-100000000001', 'Innovators Tech Guild'),
-('a1b2c3d4-e5f6-7777-8888-100000000002', 'Community Builders Alliance'),
-('a1b2c3d4-e5f6-7777-8888-100000000003', 'Future Leaders Network'),
-('a1b2c3d4-e5f6-7777-8888-100000000004', 'Creative Minds Collective'),
-('a1b2c3d4-e5f6-7777-8888-100000000005', 'Academic Scholars Society')
+('a1b2c3d4-e5f6-7777-8888-100000000002', 'Community Builders Alliance')
 ON CONFLICT (organization_id) DO NOTHING;
 
 -- ==================================================
@@ -192,96 +190,29 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 ON CONFLICT (id) DO NOTHING;
 
 
--- Organization 3: Future Leaders Network ('a1b2c3d4-e5f6-7777-8888-100000000003')
-INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 1, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 2, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 1, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 2, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 1, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000003', 1, 2025, 2025, 2, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Networking Events'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Networking Events'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Career Development'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Career Development'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Alumni Relations'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Alumni Relations'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Public Speaking Workshops'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Public Speaking Workshops'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Leadership Seminars'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Leadership Seminars'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Mentorship Program'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Mentorship Program'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Internship Coordination'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Internship Coordination'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Skill Workshops'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Skill Workshops'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 1, 'Member', 'active', 'Guest Speaker Series'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000003', 2, 2025, 2025, 2, 'Member', 'active', 'Guest Speaker Series')
-ON CONFLICT (id) DO NOTHING;
+-- ==================================================
+-- 5. Populate Fees Table
+-- ==================================================
+INSERT INTO fee (fee_id, amount, semester, year, due_date, date_paid, member_id, organization_id) VALUES
+-- Organization 1: Innovators Tech Guild ('a1b2c3d4-e5f6-7777-8888-100000000001')
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
 
-
--- Organization 4: Creative Minds Collective ('a1b2c3d4-e5f6-7777-8888-100000000004')
-INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 1, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 2, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 1, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 2, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 1, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000004', 1, 2025, 2025, 2, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Visual Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Visual Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Performing Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Performing Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Literary Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Literary Arts'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Digital Media'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Digital Media'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Crafts & Design'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Crafts & Design'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Music Production'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Music Production'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Film & Video'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Film & Video'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Photography'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Photography'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 1, 'Member', 'active', 'Creative Writing'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000004', 2, 2025, 2025, 2, 'Member', 'active', 'Creative Writing')
-ON CONFLICT (id) DO NOTHING;
-
-
--- Organization 5: Academic Scholars Society ('a1b2c3d4-e5f6-7777-8888-100000000005')
-INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 1, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 2, 'President', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 1, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 2, 'Treasurer', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 1, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a1b2c3d4-e5f6-7777-8888-100000000005', 1, 2025, 2025, 2, 'Secretary', 'active', 'Executive'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Research Group Alpha'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000012', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Research Group Alpha'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Research Group Beta'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Research Group Beta'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Conference Planning'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Conference Planning'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Journal Club'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Journal Club'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Tutoring Program'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Tutoring Program'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Academic Competitions'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Academic Competitions'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Peer Review Group'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Peer Review Group'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Thesis Support Group'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000007', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Thesis Support Group'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 1, 'Member', 'active', 'Study Abroad Committee'),
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000008', 'a1b2c3d4-e5f6-7777-8888-100000000005', 2, 2025, 2025, 2, 'Member', 'active', 'Study Abroad Committee')
-ON CONFLICT (id) DO NOTHING;
-
+-- Organization 2: Community Builders Alliance ('a1b2c3d4-e5f6-7777-8888-100000000002')
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-20', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000002')
 
 
 -- ==================================================
--- 5. Recreate Trigger for 'batch' in member_organization_role
+-- 6. Recreate Trigger for 'batch' in member_organization_role
 -- ==================================================
 -- Create function (replace if exists)
 CREATE OR REPLACE FUNCTION set_batch_based_on_first_year()
@@ -304,7 +235,7 @@ END;
 DO '
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 
+        SELECT 1
         FROM pg_trigger t
         JOIN pg_class c ON t.tgrelid = c.oid
         WHERE t.tgname = ''trg_set_batch''
