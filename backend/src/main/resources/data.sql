@@ -106,7 +106,7 @@ ON CONFLICT (organization_id) DO NOTHING;
 -- 3. Populate Members Table (12 Users - using your new valid UUIDs)
 -- ==================================================
 INSERT INTO member (member_id, first_name, last_name, gender, degree_program, email, password, created_at, updated_at) VALUES
-('b2c3d4e5-f6a1-2222-3333-200000000001', 'Liam', 'Smith', 'Male', 'Computer Science', 'liam.smith@example.com', '$2a$12$3MAe3mIrjhvbK8qNurHI3.e96NVMdrBwDY0Xwn5ibOSJ72.52Mlci', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('b2c3d4e5-f6a1-2222-3333-200000000001', 'Liam', 'Smith', 'Male', 'Computer Science', 'liam.smith@example.com', '$2a$12$FmtIllXX4TQ/UlRZNiscrug65F2p8ABgMlJOcGmFC9.Imns.nxByW', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000002', 'Olivia', 'Jones', 'Female', 'Business Administration','olivia.jones@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000003', 'Noah', 'Williams', 'Male', 'Mechanical Engineering', 'noah.williams@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000004', 'Emma', 'Brown', 'Female', 'Psychology','emma.brown@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

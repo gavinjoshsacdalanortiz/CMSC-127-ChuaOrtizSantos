@@ -12,15 +12,15 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
 
-    @Query(value = "SELECT * FROM role WHERE name = :name", nativeQuery = true)
+    @Query(value = "SELECT * FROM role WHERE name = CAST(:name as member_status_enum)", nativeQuery = true)
     Optional<Role> findByName(@Param("name") String name);
 
-    @Query(value = "SELECT EXISTS(SELECT 1 FROM role WHERE name = :name LIMIT 1)", nativeQuery = true)
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM role WHERE name = CAST(:name as member_status_enum) LIMIT 1)", nativeQuery = true)
     Boolean existsByName(@Param("name") String name);
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO role (name) VALUES (:name)", nativeQuery = true)
+    @Query(value = "INSERT INTO role (name) VALUES (CAST(:name as member_status_enum))", nativeQuery = true)
     int save(@Param("name") String name);
 
 }

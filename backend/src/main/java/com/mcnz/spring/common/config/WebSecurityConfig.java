@@ -59,7 +59,7 @@ public class WebSecurityConfig {
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/signin").permitAll()
-            .requestMatchers(HttpMethod.OPTIONS, "/membership/**", "/auth/me").permitAll().anyRequest()
+            .requestMatchers(HttpMethod.OPTIONS, "/membership/**", "/fees/**", "/auth/me").permitAll().anyRequest()
             .authenticated());
 
     http.authenticationProvider(authenticationProvider());

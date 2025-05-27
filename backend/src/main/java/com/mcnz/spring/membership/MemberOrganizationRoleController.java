@@ -77,12 +77,12 @@ public class MemberOrganizationRoleController {
                                                                 return ResponseEntity.ok(members);
                                 }
 
-                                @GetMapping("/committees/available")
-                                public ResponseEntity<List<String>> getAllCommittees(@PathVariable UUID organizationId) {
-                                                                List<String> committees = memberOrganizationRoleRepository.getAvailableCommittees(
-                                                                                                                                organizationId);
-                                                                return new ResponseEntity<>(committees, HttpStatus.OK);
-                                }
+                                // @GetMapping("/committees/available")
+                                // public ResponseEntity<List<String>> getAllCommittees(@PathVariable UUID organizationId) {
+                                //                                 List<String> committees = memberOrganizationRoleRepository.getAvailableCommittees(
+                                //                                                                                                 organizationId);
+                                //                                 return new ResponseEntity<>(committees, HttpStatus.OK);
+                                // }
 
                                 @GetMapping("/{memberId}")
                                 @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
