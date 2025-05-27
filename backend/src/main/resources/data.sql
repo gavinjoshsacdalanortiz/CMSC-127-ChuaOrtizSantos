@@ -130,22 +130,34 @@ ON CONFLICT (member_id) DO NOTHING;
 -- 5. Populate Fees Table
 -- ==================================================
 INSERT INTO fee (fee_id, amount, semester, year, due_date, date_paid, member_id, organization_id) VALUES
--- Organization 1: Innovators Tech Guild ('a1b2c3d4-e5f6-7777-8888-100000000001')
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+-- Organization 1: Innovators Tech Guild ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11')
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-10', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-15', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 15.00, '2025-10-07', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 15.00, '2025-03-07', 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11')
 
--- Organization 2: Community Builders Alliance ('a1b2c3d4-e5f6-7777-8888-100000000002')
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-20', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
+-- Organization 2: Community Builders Alliance ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', '2025-09-20', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-12', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-18', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-25', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 15.00, '2025-10-07', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 15.00, '2025-03-07', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-20', 0.00, NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
 ON CONFLICT (fee_id) DO NOTHING;
+
 
 
 -- Organization 1: Innovators Tech Guild ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11')
