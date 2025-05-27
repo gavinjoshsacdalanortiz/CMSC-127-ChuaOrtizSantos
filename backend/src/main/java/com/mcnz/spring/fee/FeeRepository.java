@@ -16,31 +16,31 @@ import java.util.UUID;
 @Repository
 public interface FeeRepository extends JpaRepository<Fee, UUID> {
 
-        @Query(value = "SELECT * FROM fees", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee", nativeQuery = true)
         List<Fee> findAll();
 
-        @Query(value = "SELECT * FROM fees WHERE fee_id = :feeId", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE fee_id = :feeId", nativeQuery = true)
         Optional<Fee> findById(@Param("feeId") UUID feeId);
 
-        @Query(value = "SELECT * FROM fees WHERE member_id = :memberId", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE member_id = :memberId", nativeQuery = true)
         List<Fee> findByMemberId(@Param("memberId") UUID memberId);
 
-        @Query(value = "SELECT * FROM fees WHERE semester = :semester", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE semester = :semester", nativeQuery = true)
         List<Fee> findBySemester(@Param("semester") Integer semester);
 
-        @Query(value = "SELECT * FROM fees WHERE year = :year", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE year = :year", nativeQuery = true)
         List<Fee> findByYear(@Param("year") Integer year);
 
-        @Query(value = "SELECT * FROM fees WHERE semester = :semester AND year = :year", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE semester = :semester AND year = :year", nativeQuery = true)
         List<Fee> findBySemesterAndYear(@Param("semester") Integer semester,
                         @Param("year") Integer year);
 
-        @Query(value = "SELECT * FROM fees WHERE id = :organizationId", nativeQuery = true)
+        @Query(value = "SELECT * FROM fee WHERE id = :organizationId", nativeQuery = true)
         List<Fee> findByOrganizationId(@Param("organizationId") UUID organizationId);
 
         @Modifying
         @Transactional
-        @Query(value = "INSERT INTO fees (amount, semester, year, due_date, date_paid, member_id, id) " +
+        @Query(value = "INSERT INTO fee (amount, semester, year, due_date, date_paid, member_id, id) " +
                         "VALUES (:amount, :semester, :year, :dueDate, :datePaid, :memberId, :organizationId)", nativeQuery = true)
         int save(@Param("amount") BigDecimal amount, @Param("semester") Integer semester,
                         @Param("year") Integer year, @Param("dueDate") LocalDate dueDate,
@@ -49,7 +49,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
 
         @Modifying
         @Transactional
-        @Query(value = "UPDATE fees SET amount = :amount, semester = :semester, year = :year, " +
+        @Query(value = "UPDATE fee SET amount = :amount, semester = :semester, year = :year, " +
                         "due_date = :dueDate, date_paid = :datePaid, member_id = :memberId, id = :organizationId " +
                         "WHERE fee_id = :feeId", nativeQuery = true)
         int update(@Param("feeId") UUID feeId, @Param("amount") BigDecimal amount,
@@ -59,16 +59,16 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
 
         @Modifying
         @Transactional
-        @Query(value = "DELETE FROM fees WHERE fee_id = :feeId", nativeQuery = true)
+        @Query(value = "DELETE FROM fee WHERE fee_id = :feeId", nativeQuery = true)
         int delete(@Param("feeId") UUID feeId);
 
-        @Query(value = "SELECT COUNT(*) FROM fees", nativeQuery = true)
+        @Query(value = "SELECT COUNT(*) FROM fee", nativeQuery = true)
         long count();
 
-        //find members with unpaid fees for a given organization, semester, and year
+        //find members with unpaid fee for a given organization, semester, and year
         @Query(value = """
         SELECT DISTINCT m.* FROM member m 
-        JOIN fees f ON m.member_id = f.member_id 
+        JOIN fee f ON m.member_id = f.member_id 
         WHERE f.id = :organizationId 
         AND f.semester = :semester 
         AND f.year = :year 
@@ -78,9 +78,9 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
                                                 @Param("semester") Integer semester, 
                                                 @Param("year") Integer year);
 
-        //find unpaid fees for a specific member across all organizations
+        //find unpaid fee for a specific member across all organizations
         @Query(value = """
-        SELECT f.*, o.organization_name FROM fees f 
+        SELECT f.*, o.organization_name FROM fee f 
         LEFT JOIN organization o ON f.id = o.organization_id 
         WHERE f.member_id = :memberId 
         AND f.date_paid IS NULL
@@ -92,7 +92,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         SELECT 
         COALESCE(SUM(CASE WHEN f.date_paid IS NOT NULL AND f.date_paid <= :asOfDate THEN f.amount ELSE 0 END), 0) as total_paid,
         COALESCE(SUM(CASE WHEN f.date_paid IS NULL OR f.date_paid > :asOfDate THEN f.amount ELSE 0 END), 0) as total_unpaid
-        FROM fees f 
+        FROM fee f 
         WHERE f.id = :organizationId 
         AND f.due_date <= :asOfDate
         """, nativeQuery = true)
@@ -103,7 +103,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         @Query(value = """
         SELECT m.*, SUM(f.amount) as total_debt 
         FROM member m 
-        JOIN fees f ON m.member_id = f.member_id 
+        JOIN fee f ON m.member_id = f.member_id 
         WHERE f.id = :organizationId 
         AND f.semester = :semester 
         AND f.year = :year 
@@ -118,7 +118,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         //find all late payments for an organization in a given semester and year
         @Query(value = """
         SELECT f.*, m.first_name, m.last_name, m.email 
-        FROM fees f 
+        FROM fee f 
         JOIN member m ON f.member_id = m.member_id 
         WHERE f.id = :organizationId 
         AND f.semester = :semester 

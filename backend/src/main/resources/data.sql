@@ -101,8 +101,8 @@ ON CONFLICT (name) DO NOTHING;
 -- 2. Populate Organizations Table (Using only 2 from your list for this example)
 -- ==================================================
 INSERT INTO organization (organization_id, organization_name) VALUES
-('a1b2c3d4-e5f6-7777-8888-100000000001', 'Innovators Tech Guild'),
-('a1b2c3d4-e5f6-7777-8888-100000000002', 'Community Builders Alliance')
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Innovators Tech Guild'),
+('f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 'Community Builders Alliance')
 ON CONFLICT (organization_id) DO NOTHING;
 
 -- ==================================================
@@ -131,23 +131,23 @@ ON CONFLICT (member_id) DO NOTHING;
 -- ==================================================
 INSERT INTO fee (fee_id, amount, semester, year, due_date, date_paid, member_id, organization_id) VALUES
 -- Organization 1: Innovators Tech Guild ('a1b2c3d4-e5f6-7777-8888-100000000001')
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a1b2c3d4-e5f6-7777-8888-100000000001'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 
 -- Organization 2: Community Builders Alliance ('a1b2c3d4-e5f6-7777-8888-100000000002')
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
-(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000002'),
-(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-20', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'a1b2c3d4-e5f6-7777-8888-100000000002')
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', NULL, 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
+(gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-09-20', 'b2c3d4e5-f6a1-2222-3333-200000000006', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
+ON CONFLICT (fee_id) DO NOTHING;
 
 
-=======
 -- Organization 1: Innovators Tech Guild ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11')
 -- 12 Memberships for AY 2024, 1st Semester (Fall)
 INSERT INTO member_organization_role (id, member_id, organization_id, role_id, batch, year, semester, position, status, committee) VALUES
@@ -178,9 +178,9 @@ INSERT INTO member_organization_role (id, member_id, organization_id, role_id, b
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000009', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2024, 2024,2, 'Member', 'active', 'AI Research'),
 (gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000010', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2024, 2024,2, 'Member', 'active', 'Web Dev'),
 -- Mason remains inactive for this org in Spring 2024
-(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2024,2024, 2, NULL, 'inactive', NULL)
+(gen_random_uuid(), 'b2c3d4e5-f6a1-2222-3333-200000000011', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 2, 2024,2024, 2, NULL, 'inactive', NULL);
 -- Mia remains alumni for this org in Spring 2024
-ON CONFLICT (id) DO NOTHING;
+
 
 
 -- -- Organization 2: Community Builders Alliance ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
