@@ -69,7 +69,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         @Query(value = """
         SELECT DISTINCT m.* FROM member m 
         JOIN fee f ON m.member_id = f.member_id 
-        WHERE f.id = :organizationId 
+        WHERE f.organization_id = :organizationId 
         AND f.semester = :semester 
         AND f.year = :year 
         AND f.date_paid IS NULL
@@ -81,11 +81,17 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         //find unpaid fee for a specific member across all organizations
         @Query(value = """
         SELECT f.*, o.organization_name FROM fee f 
-        LEFT JOIN organization o ON f.id = o.organization_id 
+        LEFT JOIN organization o ON f.organization_id = o.organization_id 
         WHERE f.member_id = :memberId 
         AND f.date_paid IS NULL
         """, nativeQuery = true)
         List<Object[]> findUnpaidFeesByMember(@Param("memberId") UUID memberId);
+
+        public interface FeeSummaryProjection {
+                java.math.BigDecimal getTotalPaid(); // Assuming amount is BigDecimal
+                java.math.BigDecimal getTotalUnpaid();
+            }
+            
 
         //get total paid and unpaid amounts for an organization as of a given date
         @Query(value = """
@@ -93,10 +99,10 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         COALESCE(SUM(CASE WHEN f.date_paid IS NOT NULL AND f.date_paid <= :asOfDate THEN f.amount ELSE 0 END), 0) as total_paid,
         COALESCE(SUM(CASE WHEN f.date_paid IS NULL OR f.date_paid > :asOfDate THEN f.amount ELSE 0 END), 0) as total_unpaid
         FROM fee f 
-        WHERE f.id = :organizationId 
+        WHERE f.organization_id = :organizationId 
         AND f.due_date <= :asOfDate
         """, nativeQuery = true)
-        Object[] getTotalFeesAsOfDate(@Param("organizationId") UUID organizationId, 
+        FeeSummaryProjection getTotalFeesAsOfDate(@Param("organizationId") UUID organizationId, 
                                 @Param("asOfDate") LocalDate asOfDate);
 
         //find members with highest debt for an organization in a given semester
@@ -104,7 +110,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         SELECT m.*, SUM(f.amount) as total_debt 
         FROM member m 
         JOIN fee f ON m.member_id = f.member_id 
-        WHERE f.id = :organizationId 
+        WHERE f.organization_id = :organizationId 
         AND f.semester = :semester 
         AND f.year = :year 
         AND f.date_paid IS NULL 
@@ -120,7 +126,7 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
         SELECT f.*, m.first_name, m.last_name, m.email 
         FROM fee f 
         JOIN member m ON f.member_id = m.member_id 
-        WHERE f.id = :organizationId 
+        WHERE f.organization_id = :organizationId 
         AND f.semester = :semester 
         AND f.year = :year 
         AND f.date_paid IS NOT NULL 

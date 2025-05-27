@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.mcnz.spring.fee.FeeRepository.FeeSummaryProjection;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.List;
@@ -184,16 +187,17 @@ public class FeeController {
             @PathVariable UUID organizationId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
         try {
-            Object[] result = feeRepository.getTotalFeesAsOfDate(organizationId, asOfDate);
+            FeeSummaryProjection result = feeRepository.getTotalFeesAsOfDate(organizationId, asOfDate);
             
             Map<String, Object> totals = new HashMap<>();
-            totals.put("totalPaid", result[0]);
-            totals.put("totalUnpaid", result[1]);
+            totals.put("totalPaid", result.getTotalPaid());
+            totals.put("totalUnpaid", result.getTotalUnpaid());
             totals.put("organizationId", organizationId);
             totals.put("asOfDate", asOfDate);
             
             return new ResponseEntity<>(totals, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
