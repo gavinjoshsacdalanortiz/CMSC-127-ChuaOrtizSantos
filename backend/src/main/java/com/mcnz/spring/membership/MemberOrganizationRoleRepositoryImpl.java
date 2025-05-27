@@ -2,6 +2,7 @@ package com.mcnz.spring.membership;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+
 import org.springframework.stereotype.Repository;
 
 import com.mcnz.spring.membership.payload.MembershipDetails;
@@ -65,7 +66,7 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
         if (committee != null)
             sql.append(" AND mor.committee = :committee");
         if (status != null)
-            sql.append(" AND mor.status = :status");
+            sql.append(" AND mor.status = CAST(:status AS member_status_enum)");
         if (gender != null)
             sql.append(" AND m.gender = :gender");
         if (degreeProgram != null)

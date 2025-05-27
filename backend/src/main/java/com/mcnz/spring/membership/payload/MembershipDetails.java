@@ -2,8 +2,6 @@ package com.mcnz.spring.membership.payload;
 
 import java.util.UUID;
 
-import com.mcnz.spring.status.Status;
-
 import jakarta.validation.constraints.NotBlank;
 
 public class MembershipDetails {

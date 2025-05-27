@@ -106,7 +106,7 @@ ON CONFLICT (organization_id) DO NOTHING;
 -- 3. Populate Members Table (12 Users - using your new valid UUIDs)
 -- ==================================================
 INSERT INTO member (member_id, first_name, last_name, gender, degree_program, email, password, created_at, updated_at) VALUES
-('b2c3d4e5-f6a1-2222-3333-200000000001', 'Liam', 'Smith', 'Male', 'Computer Science', 'liam.smith@example.com', '$2a$12$VAYukPQ2Z010QAZbkmjsGuIKNq4shNnIaCRpvFbgokTjNXsO796Kq', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('b2c3d4e5-f6a1-2222-3333-200000000001', 'Liam', 'Smith', 'Male', 'Computer Science', 'liam.smith@example.com', '$2a$12$3MAe3mIrjhvbK8qNurHI3.e96NVMdrBwDY0Xwn5ibOSJ72.52Mlci', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000002', 'Olivia', 'Jones', 'Female', 'Business Administration','olivia.jones@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000003', 'Noah', 'Williams', 'Male', 'Mechanical Engineering', 'noah.williams@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000004', 'Emma', 'Brown', 'Female', 'Psychology','emma.brown@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -125,7 +125,6 @@ ON CONFLICT (member_id) DO NOTHING;
 -- 5. Populate Fees Table
 -- ==================================================
 INSERT INTO fee (fee_id, amount, semester, year, due_date, date_paid, member_id, organization_id) VALUES
--- Organization 1: Innovators Tech Guild ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11')
 (gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-10', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 (gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', '2025-09-15', 'b2c3d4e5-f6a1-2222-3333-200000000001', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 (gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
@@ -137,8 +136,6 @@ INSERT INTO fee (fee_id, amount, semester, year, due_date, date_paid, member_id,
 (gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-02-20', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 (gen_random_uuid(), 75.00, 2, 2025, '2025-09-30', '2025-10-07', 'b2c3d4e5-f6a1-2222-3333-200000000002', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 (gen_random_uuid(), 75.00, 1, 2025, '2025-02-28', '2025-03-07', 'b2c3d4e5-f6a1-2222-3333-200000000003', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
-
--- Organization 2: Community Builders Alliance ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6')
 (gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-12', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
 (gen_random_uuid(), 75.00, 2, 2024, '2025-09-30', '2025-09-18', 'b2c3d4e5-f6a1-2222-3333-200000000004', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),
 (gen_random_uuid(), 75.00, 1, 2024, '2025-02-28', '2025-02-25', 'b2c3d4e5-f6a1-2222-3333-200000000005', 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6'),

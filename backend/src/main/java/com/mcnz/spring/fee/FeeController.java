@@ -49,21 +49,22 @@ public class FeeController {
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/organization/{organizationId}/filter")
     public ResponseEntity<List<Fee>> filterFees(
+            @PathVariable UUID organizationId,
             @RequestParam(required = false) Integer semester,
             @RequestParam(required = false) Integer year) {
 
         List<Fee> fees;
 
         if (semester != null && year != null) {
-            fees = feeRepository.findBySemesterAndYear(semester, year);
+            fees = feeRepository.findBySemesterAndYear(semester, year, organizationId);
         } else if (semester != null) {
-            fees = feeRepository.findBySemester(semester);
+            fees = feeRepository.findBySemester(semester, organizationId);
         } else if (year != null) {
-            fees = feeRepository.findByYear(year);
+            fees = feeRepository.findByYear(year, organizationId);
         } else {
-            fees = feeRepository.findAll();
+            fees = feeRepository.findByOrganizationId(organizationId);
         }
 
         return new ResponseEntity<>(fees, HttpStatus.OK);
@@ -129,7 +130,7 @@ public class FeeController {
         }
     }
 
-    //get members with unpaid fees for a given organization, semester, and year
+    // get members with unpaid fees for a given organization, semester, and year
     @GetMapping("/unpaid/members")
     public ResponseEntity<List<Map<String, Object>>> getMembersWithUnpaidFees(
             @RequestParam UUID organizationId,
@@ -138,7 +139,7 @@ public class FeeController {
         try {
             List<Object[]> results = feeRepository.findMembersWithUnpaidFees(organizationId, semester, year);
             List<Map<String, Object>> members = new ArrayList<>();
-            
+
             for (Object[] row : results) {
                 Map<String, Object> member = new HashMap<>();
                 member.put("memberId", row[0]);
@@ -149,20 +150,20 @@ public class FeeController {
                 member.put("degreeProgram", row[5]);
                 members.add(member);
             }
-            
+
             return new ResponseEntity<>(members, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //get a member's unpaid fees across all organizations
+    // get a member's unpaid fees across all organizations
     @GetMapping("/unpaid/member/{memberId}")
     public ResponseEntity<List<Map<String, Object>>> getMemberUnpaidFees(@PathVariable UUID memberId) {
         try {
             List<Object[]> results = feeRepository.findUnpaidFeesByMember(memberId);
             List<Map<String, Object>> unpaidFees = new ArrayList<>();
-            
+
             for (Object[] row : results) {
                 Map<String, Object> feeInfo = new HashMap<>();
                 feeInfo.put("feeId", row[0]);
@@ -174,27 +175,27 @@ public class FeeController {
                 feeInfo.put("organizationName", row[8]);
                 unpaidFees.add(feeInfo);
             }
-            
+
             return new ResponseEntity<>(unpaidFees, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //get total paid and unpaid amounts for an organization as of a given date
+    // get total paid and unpaid amounts for an organization as of a given date
     @GetMapping("/totals/{organizationId}")
     public ResponseEntity<Map<String, Object>> getOrganizationFeeTotals(
             @PathVariable UUID organizationId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
         try {
             FeeSummaryProjection result = feeRepository.getTotalFeesAsOfDate(organizationId, asOfDate);
-            
+
             Map<String, Object> totals = new HashMap<>();
             totals.put("totalPaid", result.getTotalPaid());
             totals.put("totalUnpaid", result.getTotalUnpaid());
             totals.put("organizationId", organizationId);
             totals.put("asOfDate", asOfDate);
-            
+
             return new ResponseEntity<>(totals, HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e);
@@ -202,7 +203,7 @@ public class FeeController {
         }
     }
 
-    //get members with highest debt for an organization in a given semester
+    // get members with highest debt for an organization in a given semester
     @GetMapping("/highest-debt")
     public ResponseEntity<List<Map<String, Object>>> getMembersWithHighestDebt(
             @RequestParam UUID organizationId,
@@ -211,7 +212,7 @@ public class FeeController {
         try {
             List<Object[]> results = feeRepository.findMembersWithHighestDebt(organizationId, semester, year);
             List<Map<String, Object>> membersWithDebt = new ArrayList<>();
-            
+
             for (Object[] row : results) {
                 Map<String, Object> memberDebt = new HashMap<>();
                 memberDebt.put("memberId", row[0]);
@@ -223,14 +224,14 @@ public class FeeController {
                 memberDebt.put("totalDebt", row[8]);
                 membersWithDebt.add(memberDebt);
             }
-            
+
             return new ResponseEntity<>(membersWithDebt, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //get all late payments for an organization in a given semester and year
+    // get all late payments for an organization in a given semester and year
     @GetMapping("/late-payments")
     public ResponseEntity<List<Map<String, Object>>> getLatePayments(
             @RequestParam UUID organizationId,
@@ -239,7 +240,7 @@ public class FeeController {
         try {
             List<Object[]> results = feeRepository.findLatePayments(organizationId, semester, year);
             List<Map<String, Object>> latePayments = new ArrayList<>();
-            
+
             for (Object[] row : results) {
                 Map<String, Object> payment = new HashMap<>();
                 payment.put("feeId", row[0]);
@@ -255,7 +256,7 @@ public class FeeController {
                 payment.put("memberEmail", row[10]);
                 latePayments.add(payment);
             }
-            
+
             return new ResponseEntity<>(latePayments, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
