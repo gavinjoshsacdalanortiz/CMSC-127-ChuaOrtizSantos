@@ -120,4 +120,54 @@ public interface MemberOrganizationRoleRepository
       @Param("status") String status,
       @Param("year") Integer year,
       @Param("semester") Integer semester);
+
+      public interface MembershipStatusPercentage {
+        String getStatus();
+        Long getMemberCount();
+        Long getTotalMembers();
+        java.math.BigDecimal getPercentage();
+    }
+    
+    @Query(value = "WITH CurrentAcademicPeriod AS ( " +
+        "    SELECT " +
+        "        CASE " +
+        "            WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 8 THEN EXTRACT(YEAR FROM CURRENT_DATE) " +
+        "            ELSE EXTRACT(YEAR FROM CURRENT_DATE) - 1 " +
+        "        END AS current_ay_year, " +
+        "        CASE " +
+        "            WHEN EXTRACT(MONTH FROM CURRENT_DATE) >= 8 THEN 1 " +
+        "            ELSE 2 " +
+        "        END AS current_ay_semester " +
+        "), " +
+        "RelevantMemberships AS ( " +
+        "    SELECT mor.member_id, mor.status, mor.year, mor.semester, " +
+        "           ROW_NUMBER() OVER (PARTITION BY mor.member_id ORDER BY mor.year DESC, mor.semester DESC) as rn " +
+        "    FROM member_organization_role mor " +
+        "    JOIN CurrentAcademicPeriod cap ON true " +
+        "    WHERE mor.organization_id = :organizationId " +
+        "      AND ((mor.year > :startYear) OR (mor.year = :startYear AND mor.semester >= :startSemester)) " +
+        "      AND ((mor.year < cap.current_ay_year) OR (mor.year = cap.current_ay_year AND mor.semester <= cap.current_ay_semester)) " +
+        "), " +
+        "LatestMemberStatus AS ( " +
+        "    SELECT member_id, status FROM RelevantMemberships WHERE rn = 1 " +
+        "), " +
+        "StatusCounts AS ( " +
+        "    SELECT status, COUNT(DISTINCT member_id) AS member_count FROM LatestMemberStatus GROUP BY status " +
+        "), " +
+        "TotalUniqueMembers AS ( " +
+        "    SELECT COUNT(DISTINCT member_id) AS total_members FROM LatestMemberStatus " +
+        ") " +
+        "SELECT " +
+        "    sc.status AS status, " + 
+        "    sc.member_count AS memberCount, " +
+        "    tm.total_members AS totalMembers, " +
+        "    CASE WHEN tm.total_members > 0 THEN ROUND((sc.member_count::DECIMAL * 100.0 / tm.total_members), 2) ELSE 0 END AS percentage " +
+        "FROM " +
+        "    StatusCounts sc, TotalUniqueMembers tm " +
+        "ORDER BY sc.status", nativeQuery = true)
+    List<MembershipStatusPercentage> getMembershipStatusPercentages(
+    @Param("organizationId") UUID organizationId,
+    @Param("startYear") Integer startYear,
+    @Param("startSemester") Integer startSemester
+    );
 }

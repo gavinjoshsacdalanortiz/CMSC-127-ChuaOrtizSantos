@@ -2,6 +2,7 @@ package com.mcnz.spring.membership;
 
 import com.mcnz.spring.member.Member;
 import com.mcnz.spring.member.MemberRepository;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository.MembershipStatusPercentage;
 import com.mcnz.spring.membership.payload.MembershipDetails;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,29 @@ public class MemberOrganizationRoleController {
                                                 "Member with ID " + memberId + " is not part of organization "
                                                                 + organizationId));
         }
+
+
+    @GetMapping("/status-percentages")
+    @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
+    public ResponseEntity<List<MembershipStatusPercentage>> getMembershipStatusPercentages(
+            @PathVariable UUID organizationId,
+            @RequestParam Integer startYear,    // Parameter from frontend
+            @RequestParam Integer startSemester // Parameter from frontend
+    ) {
+
+        List<MembershipStatusPercentage> percentages = memberOrganizationRoleRepository
+                .getMembershipStatusPercentages(organizationId, startYear, startSemester);
+
+        if (percentages.isEmpty()) {
+            // You can choose to return an empty list or a 404 if no data for that period.
+            // For simplicity, an empty list is often fine.
+            // Or: throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No membership data found for the specified period.");
+        }
+
+        return ResponseEntity.ok(percentages);
+    }
+
+        
 
         @DeleteMapping("/{memberId}")
         @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
