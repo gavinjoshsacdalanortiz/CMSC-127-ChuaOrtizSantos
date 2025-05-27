@@ -69,10 +69,10 @@ CREATE TABLE IF NOT EXISTS member_organization_role (
     status member_status_enum NOT NULL,
     committee VARCHAR(255),
 
-    CONSTRAINT fk_member FOREIGN KEY (member_id) REFERENCES member (member_id),
-    CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organization (organization_id),
-    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role (role_id),
-    CONSTRAINT chk_status CHECK (status IN ('active', 'inactive', 'suspended', 'expelled', 'alumni'))
+    CONSTRAINT fk_member_organization_role_member FOREIGN KEY (member_id) REFERENCES member (member_id),
+    CONSTRAINT fk_member_organization_role_organization FOREIGN KEY (organization_id) REFERENCES organization (organization_id),
+    CONSTRAINT fk_member_organization_role_role FOREIGN KEY (role_id) REFERENCES role (role_id),
+    CONSTRAINT chk_member_organization_role_status CHECK (status IN ('active', 'inactive', 'suspended', 'expelled', 'alumni'))
 );
 
 CREATE TABLE IF NOT EXISTS fee (
@@ -97,9 +97,6 @@ INSERT INTO role (role_id, name) VALUES
 (2, 'ROLE_MEMBER')
 ON CONFLICT (name) DO NOTHING;
 
--- ==================================================
--- 2. Populate Organizations Table (Using only 2 from your list for this example)
--- ==================================================
 INSERT INTO organization (organization_id, organization_name) VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Innovators Tech Guild'),
 ('f81d4fae-7dec-11d0-a765-00a0c91e6bf6', 'Community Builders Alliance')
@@ -108,8 +105,6 @@ ON CONFLICT (organization_id) DO NOTHING;
 -- ==================================================
 -- 3. Populate Members Table (12 Users - using your new valid UUIDs)
 -- ==================================================
--- REMEMBER TO REPLACE ALL '$2a$10$...' PASSWORD HASHES WITH ACTUAL VALID HASHES for each user
--- Assuming graduation_year is now an INTEGER column in your 'member' table.
 INSERT INTO member (member_id, first_name, last_name, gender, degree_program, email, password, created_at, updated_at) VALUES
 ('b2c3d4e5-f6a1-2222-3333-200000000001', 'Liam', 'Smith', 'Male', 'Computer Science', 'liam.smith@example.com', '$2a$12$VAYukPQ2Z010QAZbkmjsGuIKNq4shNnIaCRpvFbgokTjNXsO796Kq', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('b2c3d4e5-f6a1-2222-3333-200000000002', 'Olivia', 'Jones', 'Female', 'Business Administration','olivia.jones@example.com', '$2a$10$K.iVjXVzJg7yVw.j6H8sR.uQY9zCjP0QkI8GqJkLwN9tO3rDxD0K', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
