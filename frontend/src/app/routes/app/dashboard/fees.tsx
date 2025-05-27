@@ -2,19 +2,28 @@ import Toast from "@/components/core/toast";
 import DashboardTitle from "@/features/dashboard/components/dashboard-title";
 import { useFees } from "@/features/dashboard/fees/api/get-fees";
 import FeeRow from "@/features/dashboard/fees/components/fee-row";
+import { reverseMap } from "@/lib/utils";
 import { FeeQueryOptions } from "@/types/fee";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 // TODO: edit options once backend is good
 const FeesDashboard = () => {
+  const { orgId: organizationId } = useParams();
   const [filters, setFilters] = useState<FeeQueryOptions>(
-    {} as FeeQueryOptions
+    {} as FeeQueryOptions,
   );
 
-  const { fees, pending, error } = useFees(filters);
+  const { fees, options, pending, error } = useFees(filters, organizationId!);
+
+  const stMap = new Map<string, number>();
+  stMap.set("1st", 1);
+  stMap.set("2nd", 2);
+
+  const reversedStMap = reverseMap(stMap);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -44,19 +53,18 @@ const FeesDashboard = () => {
             className="select w-fit border-none rounded-box bg-base-100"
             onChange={handleFilterChange}
           >
-            <option>1st</option>
-            <option>2nd</option>
-            <option>Midyear</option>
+            <option value={1}>1st</option>
+            <option value={2}>2nd</option>
           </select>
           <select
-            name="academicYear"
-            value={filters.academicYear}
+            name="year"
+            value={filters.year}
             className="select w-fit border-none rounded-box bg-base-100"
             onChange={handleFilterChange}
           >
-            <option>2022-2023</option>
-            <option>2023-2025</option>
-            <option>2025-2025</option>
+            {options.availableYears.map((year) => (
+              <option value={parseInt(year)}>{year}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -64,12 +72,8 @@ const FeesDashboard = () => {
       <table className="table">
         <thead>
           <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <th>Organization</th>
+            <th></th>
+            <th>Semester Issued</th>
             <th>Due Date</th>
             <th>Amount</th>
             <th>Is Paid?</th>
@@ -77,9 +81,16 @@ const FeesDashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {fees?.map((fee) => (
+          {fees?.map((fee, index) => (
             <FeeRow
-              organizationName={fee.organization.name ?? ""}
+              index={index + 1}
+              semesterIssued={
+                "S.Y. " +
+                fee.year! +
+                ", " +
+                reversedStMap.get(parseInt(fee.semester)) +
+                " semester"
+              }
               dueDate={fee.dueDate}
               amount={fee.amount}
               isPaid={!!fee.datePaid}

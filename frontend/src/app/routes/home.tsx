@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 const Home = () => {
-  const { user } = useAuth();
+  const { member } = useAuth();
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
@@ -13,12 +13,12 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if (member) {
       navigate(redirectTo ? redirectTo : paths.app.dashboard.root.path, {
         replace: true,
       });
     }
-  }, [user, navigate, redirectTo]);
+  }, [member, navigate, redirectTo]);
 
   return (
     <main className="overflow-hidden">

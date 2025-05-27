@@ -1,5 +1,6 @@
 import { env } from "@/config/env";
 import { paths } from "@/config/paths";
+import { getToken } from "./cookie";
 
 type FetchOptions = Omit<RequestInit, "body"> & {
   params?: Record<string, any>;
@@ -7,7 +8,7 @@ type FetchOptions = Omit<RequestInit, "body"> & {
 
 const constructUrlWithParams = (
   baseUrl: string,
-  params?: Record<string, any>
+  params?: Record<string, any>,
 ) => {
   if (!params || Object.keys(params).length === 0) {
     return baseUrl;
@@ -43,11 +44,12 @@ const handleUnauthorized = () => {
 const defaultHeaders = {
   Accept: "application/json",
   "Content-Type": "application/json",
+  Authorization: `Bearer ${getToken()}`,
 };
 
 const fetchWithAuth = async <T = any>(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> => {
   const config: RequestInit = {
     ...options,
@@ -61,10 +63,6 @@ const fetchWithAuth = async <T = any>(
   const res = await fetch(`${env.API_URL}${url}`, config);
 
   if (!res.ok) {
-    if (res.status === 401) {
-      handleUnauthorized();
-    }
-
     const errorBody = await res.json().catch(() => ({}));
     return Promise.reject({
       status: res.status,

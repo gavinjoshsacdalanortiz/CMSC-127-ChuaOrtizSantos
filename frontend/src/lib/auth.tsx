@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { api } from "./api-client";
 import { getToken, removeToken, setToken } from "@/lib/cookie";
-import { AuthResponse, User } from "@/types/api";
+import { AuthResponse } from "@/types/api";
 import {
   LoginInput,
   RegisterInput,
@@ -17,9 +17,10 @@ import {
 } from "./auth-functions";
 import { Navigate, useLocation } from "react-router";
 import { paths } from "@/config/paths";
+import { Member } from "@/types/member";
 
 interface AuthContextType {
-  user: User | null;
+  member: Member | null;
   login: (data: LoginInput) => Promise<void>;
   register: (data: RegisterInput) => Promise<void>;
   logout: () => Promise<void>;
@@ -29,7 +30,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [member, setUser] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUser = useCallback(async () => {
@@ -45,8 +46,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       setUser(response);
     } catch (error) {
-      console.error("Error fetching user:", error);
-      // removeToken();
+      console.error("Error fetching member:", error);
+      removeToken();
       setUser(null);
     } finally {
       setLoading(false);
@@ -63,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response: AuthResponse = await loginWithEmailAndPassword(data);
         setToken(response.token);
+        getToken();
         await fetchUser();
       } catch (error) {
         console.error("Login failed:", error);
@@ -72,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     },
-    [fetchUser]
+    [fetchUser],
   );
 
   const register = useCallback(
@@ -90,7 +92,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       }
     },
-    [fetchUser]
+    [fetchUser],
   );
 
   const logout = useCallback(async () => {
@@ -112,13 +114,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const authContextValue = useMemo(
     () => ({
-      user,
+      member,
       login,
       register,
       logout,
       loading,
     }),
-    [user, login, register, logout, loading]
+    [member, login, register, logout, loading],
   );
 
   return (
@@ -137,15 +139,19 @@ export const useAuth = () => {
 };
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
+  const { member, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <span className="loading loading-xl loading-spinner text-neutral"></span>
+      </div>
+    );
   }
 
-  if (!user) {
-    return <Navigate to={paths.home.getHref(location.pathname)} replace />;
+  if (!member) {
+    return <Navigate to={paths.home.getHref()} replace />;
   }
 
   return children;

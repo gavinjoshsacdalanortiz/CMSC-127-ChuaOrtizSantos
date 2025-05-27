@@ -20,10 +20,10 @@ const LoginForm = () => {
 
   return (
     <form
-      className="w-2/3 mx-auto  p-4 text-neutral-content bg-base-200/10 backdrop-blur-sm rounded-box"
+      className="w-2/3 mx-auto p-4 text-neutral-content bg-base-200/10 backdrop-blur-sm rounded-box"
       onSubmit={handleSubmit}
     >
-      <h2 className="font-display hidden mb-4 text-3xl xl:block">Login</h2>
+      <h2 className="font-display hidden mb-4 text-3xl xl:block">Sign In</h2>
       <label className="validator input mb-2 has-user-invalid:mb-0 w-full bg-transparent peer">
         <FiMail />
         <input name="email" type="email" placeholder="Email address" required />
@@ -38,7 +38,7 @@ const LoginForm = () => {
           name="password"
           type="password"
           placeholder="Password"
-          minLength={8}
+          minLength={6}
           required
         />
       </label>

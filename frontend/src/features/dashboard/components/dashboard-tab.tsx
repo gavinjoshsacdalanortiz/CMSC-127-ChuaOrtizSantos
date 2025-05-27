@@ -1,23 +1,23 @@
-import { Link } from "react-router";
-
 type Props = {
   leadingIcon: React.ReactNode;
   label: string;
   isSelected: boolean;
-  updateTab: (label: string) => void;
+  onClick: () => void;
 };
 
 const DashboardTab = (props: Props) => {
   return (
-    <Link
-      to={props.label.toLowerCase()}
+    <button
+      title={props.label}
       role="radio"
-      onClick={() => props.updateTab(props.label)}
-      className={`flex hover:bg-base-200 place-items-center gap-2 text-sm rounded-box p-4 py-2 transition-colors w-full cursor-pointer ${props.isSelected ? "!bg-primary" : "bg-base-100"}`}
+      onClick={props.onClick}
+      className={`flex hover:bg-base-200 place-items-center gap2 text-sm rounded-box btn-full  xl:justify-start group p-2 transition-colors w-full cursor-pointer ${props.isSelected ? "!bg-primary" : "bg-base-100"}`}
     >
-      {props.leadingIcon}
-      <div>{props.label}</div>
-    </Link>
+      <span className="ml-2 not-xl:mx-auto">{props.leadingIcon}</span>
+      <span className="ml-0 xl:ml-3 hidden xl:inline-flex whitespace-nowrap">
+        {props.label}
+      </span>
+    </button>
   );
 };
 

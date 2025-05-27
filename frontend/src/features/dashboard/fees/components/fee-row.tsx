@@ -1,32 +1,26 @@
 import { Fee } from "@/types/fee";
 
-type Props = { organizationName: string; isPaid: boolean } & Pick<
+type Props = { semesterIssued: string; isPaid: boolean; index: number } & Pick<
   Fee,
   "dueDate" | "amount"
 >;
 const FeeRow = (props: Props) => {
   return (
     <tr>
-      <th>
-        <label>
-          <input type="checkbox" className="checkbox" />
-        </label>
-      </th>
+      <td className="text-2xl font-thin opacity-50 tabular-nums">
+        {props.index}
+      </td>
       <td>
-        <div className="flex items-center gap-3">
-          <div>
-            <div className="font-bold">{props.organizationName}</div>
-          </div>
-        </div>
+        <div>{props.semesterIssued}</div>
       </td>
       <td>
         <div>{props.dueDate}</div>
       </td>
       <td>
-        <div className="font-semibold">{props.amount}</div>
+        <div className="font-semibold">₱{props.amount}</div>
       </td>
       <td>
-        {isPaid ? (
+        {props.isPaid ? (
           <span className="badge badge-success badge-xs md:bagde-xs ">
             Paid
           </span>

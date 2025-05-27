@@ -15,12 +15,12 @@ export const paths = {
         getHref: () => "/app",
       },
       members: {
-        path: "/app/dashboard/members",
-        getHref: () => "/members",
+        path: "/app/dashboard/:orgId/members",
+        getHref: (id: string) => `/app/dashboard/${id}/members`,
       },
       fees: {
-        path: "/app/dashboard/fees",
-        getHref: () => "/fees",
+        path: "/app/dashboard/:orgId/fees",
+        getHref: (id: string) => `/app/dashboard/${id}/fees`,
       },
     },
   },
