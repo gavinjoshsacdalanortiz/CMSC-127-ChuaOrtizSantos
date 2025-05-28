@@ -414,19 +414,19 @@ const ManageFeesPage = () => {
                 <div className="stat">
                   <div className="stat-title">Total Paid</div>
                   <div className="stat-value text-success">
-                    ${feeTotalsData.totalPaid?.toFixed(2) || "0.00"}
+                    ₱{feeTotalsData.totalPaid?.toFixed(2) || "0.00"}
                   </div>
                 </div>
                 <div className="stat">
                   <div className="stat-title">Total Unpaid</div>
                   <div className="stat-value text-error">
-                    ${feeTotalsData.totalUnpaid?.toFixed(2) || "0.00"}
+                    ₱{feeTotalsData.totalUnpaid?.toFixed(2) || "0.00"}
                   </div>
                 </div>
                 <div className="stat">
                   <div className="stat-title">Grand Total (Issued)</div>
                   <div className="stat-value">
-                    $
+                    ₱
                     {(
                       (feeTotalsData.totalPaid || 0) +
                       (feeTotalsData.totalUnpaid || 0)
@@ -466,7 +466,7 @@ const ManageFeesPage = () => {
                   <li key={member.memberId} className="my-1">
                     {member.memberName}:{" "}
                     <span className="font-semibold">
-                      ${member.totalDebt.toFixed(2)}
+                      ₱{member.totalDebt.toFixed(2)}
                     </span>
                   </li>
                 ))}

@@ -101,7 +101,7 @@ public class FeeController {
 
     }
 
-    @GetMapping("/available-years")
+    @GetMapping("/organization/{organizationId}/available-years")
     @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
     public ResponseEntity<List<AvailableAcademicYears>> getAvailableAcademicYears(
             @PathVariable UUID organizationId
