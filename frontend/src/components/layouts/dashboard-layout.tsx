@@ -46,7 +46,10 @@ const DashboardLayout = ({ children }: LayoutProps) => {
       // Or, if your URL structure is /dashboard/:tab/:orgId
       // const currentTabRoute = pathSegments[2];
 
-      if (currentTabRoute && ["members", "fees"].includes(currentTabRoute)) {
+      if (
+        currentTabRoute &&
+        ["members", "fees", "manage"].includes(currentTabRoute)
+      ) {
         switch (
           selectedTab // selectedTab comes from your component's state
         ) {
@@ -56,16 +59,21 @@ const DashboardLayout = ({ children }: LayoutProps) => {
           case "fees":
             navigate(paths.app.dashboard.fees.getHref(selectedOrganization));
             break;
+          case "manage":
+            navigate(
+              paths.app.dashboard.manageFees.getHref(selectedOrganization)
+            );
+            break;
           default:
             console.warn(
-              "Selected tab is not recognized, navigating to default members tab.",
+              "Selected tab is not recognized, navigating to default members tab."
             );
             navigate(paths.app.dashboard.members.getHref(selectedOrganization));
             break;
         }
       } else {
         console.log(
-          "No recognized tab, navigating to default members tab for new org.",
+          "No recognized tab, navigating to default members tab for new org."
         );
         navigate(paths.app.dashboard.members.getHref(selectedOrganization));
       }
@@ -81,7 +89,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
 
     if (
       currentPotentialTab &&
-      ["members", "fees"].includes(currentPotentialTab)
+      ["members", "fees", "manage"].includes(currentPotentialTab)
     ) {
       setSelectedTab(currentPotentialTab);
     } else if (
@@ -95,7 +103,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
   }, [location.pathname, selectedOrganization]);
 
   const handleOrganizationChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setSelectedOrganization(event.target.value);
   };
@@ -191,7 +199,7 @@ const DashboardLayout = ({ children }: LayoutProps) => {
           onClick={() => {
             if (selectedOrganization) {
               navigate(
-                paths.app.dashboard.members.getHref(selectedOrganization),
+                paths.app.dashboard.members.getHref(selectedOrganization)
               );
             }
           }}

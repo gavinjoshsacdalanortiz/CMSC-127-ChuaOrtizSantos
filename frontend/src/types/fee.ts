@@ -10,8 +10,8 @@ export type Fee = {
 
 export type FeeQueryOptions = {
   organizationId?: number | string;
-  semester?: string;
-  year?: string;
+  semester?: number;
+  year?: number;
   isPaid?: boolean;
 };
 

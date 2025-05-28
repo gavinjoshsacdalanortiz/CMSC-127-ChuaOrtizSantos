@@ -10,6 +10,7 @@ import AppRoot, {
 import MembersDashboard from "./routes/app/dashboard/members";
 import DashboardRoot from "./routes/app/dashboard/root";
 import FeesDashboard from "./routes/app/dashboard/fees";
+import ManageFeesPage from "./routes/app/dashboard/manage-fees";
 
 const createAppRouter = () => {
   const routes: RouteObject[] = [
@@ -41,6 +42,10 @@ const createAppRouter = () => {
             {
               path: paths.app.dashboard.fees.path,
               element: <FeesDashboard />,
+            },
+            {
+              path: paths.app.dashboard.manageFees.path,
+              element: <ManageFeesPage />,
             },
           ],
         },

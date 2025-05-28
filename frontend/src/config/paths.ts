@@ -22,6 +22,10 @@ export const paths = {
         path: "/app/dashboard/:orgId/fees",
         getHref: (id: string) => `/app/dashboard/${id}/fees`,
       },
+      manageFees: {
+        path: "/app/dashboard/:orgId/manage",
+        getHref: (id: string) => `/app/dashboard/${id}/manage`,
+      },
     },
   },
 } as const;

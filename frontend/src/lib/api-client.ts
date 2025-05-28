@@ -60,6 +60,7 @@ const fetchWithAuth = async <T = any>(
     credentials: "include",
   };
 
+
   const res = await fetch(`${env.API_URL}${url}`, config);
 
   if (!res.ok) {

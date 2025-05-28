@@ -56,6 +56,10 @@ export function useMembers(
         return;
       }
 
+      if (!currentStatOptions.startSemester && !currentStatOptions.startYear) {
+        return;
+      }
+
       try {
         const responseData = await api.get<MembershipStatusPercentage[]>(
           `/membership/${organizationId}/members/status-percentages`,

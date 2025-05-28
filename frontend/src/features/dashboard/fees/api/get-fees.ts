@@ -4,7 +4,7 @@ import { api } from "@/lib/api-client";
 
 export function useFees(
   options: FeeQueryOptions = {},
-  organizationId: string,
+  organizationId: string
 ): UseFeesReturn {
   const [fees, setFees] = useState<Fee[] | null>(null);
   const [availableOptions, setAvailableOptions] = useState<
@@ -18,15 +18,19 @@ export function useFees(
   const optionsString = useMemo(() => JSON.stringify(options), [options]);
 
   useEffect(() => {
-    if (!fees || !!availableOptions.availableYears.length) return;
+    (async () => {
+      const response = await api.get<Fee[]>(
+        `/fees/organization/${organizationId}`
+      );
 
-    const availableYears = [...new Set(fees.map((fee) => fee.year))];
+      const availableYears = [...new Set(response.map((fee) => fee.year))];
 
-    console.log(availableYears);
+      console.log(availableYears);
 
-    setAvailableOptions({
-      availableYears: availableYears,
-    });
+      setAvailableOptions({
+        availableYears: availableYears,
+      });
+    })();
   }, [fees]);
 
   useEffect(() => {
@@ -43,10 +47,10 @@ export function useFees(
 
         try {
           const response = await api.get<Fee[]>(
-            `/fees/organization/${organizationId}/filter`,
+            `/fees/organization/${organizationId}/me/filter`,
             {
               params: params,
-            },
+            }
           );
 
           if (!isCancelled) {
@@ -56,7 +60,7 @@ export function useFees(
           console.error("useFees: Fetch failed", err);
           if (!isCancelled) {
             setError(
-              err instanceof Error ? err : new Error("Failed to fetch fees"),
+              err instanceof Error ? err : new Error("Failed to fetch fees")
             );
             setFees(null);
           }
@@ -68,7 +72,7 @@ export function useFees(
       } else {
         try {
           const response = await api.get<Fee[]>(
-            `/fees/organization/${organizationId}`,
+            `/fees/organization/${organizationId}/me`
           );
 
           if (!isCancelled) {
@@ -78,7 +82,7 @@ export function useFees(
           console.error("useFees: Fetch failed", err);
           if (!isCancelled) {
             setError(
-              err instanceof Error ? err : new Error("Failed to fetch fees"),
+              err instanceof Error ? err : new Error("Failed to fetch fees")
             );
             setFees(null);
           }

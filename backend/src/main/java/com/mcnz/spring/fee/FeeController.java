@@ -3,9 +3,12 @@ package com.mcnz.spring.fee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.mcnz.spring.fee.FeeRepository.FeeSummaryProjection;
+import com.mcnz.spring.member.Member;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -46,6 +49,37 @@ public class FeeController {
     @GetMapping("/organization/{organizationId}")
     public ResponseEntity<List<Fee>> getFeesByOrganizationId(@PathVariable UUID organizationId) {
         List<Fee> fees = feeRepository.findByOrganizationId(organizationId);
+        return new ResponseEntity<>(fees, HttpStatus.OK);
+    }
+
+    @GetMapping("/organization/{organizationId}/me")
+    public ResponseEntity<List<Fee>> getFeesByOrganizationIdAndMemberId(@PathVariable UUID organizationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member currentMember = (Member) authentication.getPrincipal();
+        List<Fee> fees = feeRepository.findByOrganizationIdAndMemberId(organizationId, currentMember.getMemberId());
+        return new ResponseEntity<>(fees, HttpStatus.OK);
+    }
+
+    @GetMapping("/organization/{organizationId}/me/filter")
+    public ResponseEntity<List<Fee>> filterFeesOfMember(
+            @PathVariable UUID organizationId,
+            @RequestParam(required = true) Integer semester,
+            @RequestParam(required = true) Integer year) {
+
+        List<Fee> fees;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member currentMember = (Member) authentication.getPrincipal();
+
+        System.out.println(currentMember.getMemberId());
+
+        if (semester != null && year != null) {
+            fees = feeRepository.findBySemesterAndYearWithMemberId(semester, year, organizationId,
+                    currentMember.getMemberId());
+        } else {
+            throw new Error("No fees");
+        }
+
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
 

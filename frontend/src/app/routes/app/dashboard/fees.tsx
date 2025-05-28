@@ -2,16 +2,18 @@ import Toast from "@/components/core/toast";
 import DashboardTitle from "@/features/dashboard/components/dashboard-title";
 import { useFees } from "@/features/dashboard/fees/api/get-fees";
 import FeeRow from "@/features/dashboard/fees/components/fee-row";
+import { useAuth } from "@/lib/auth";
 import { reverseMap } from "@/lib/utils";
 import { FeeQueryOptions } from "@/types/fee";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 // TODO: edit options once backend is good
 const FeesDashboard = () => {
+  const { member } = useAuth();
   const { orgId: organizationId } = useParams();
   const [filters, setFilters] = useState<FeeQueryOptions>(
-    {} as FeeQueryOptions,
+    {} as FeeQueryOptions
   );
 
   const { fees, options, pending, error } = useFees(filters, organizationId!);
@@ -23,7 +25,7 @@ const FeesDashboard = () => {
   const reversedStMap = reverseMap(stMap);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
@@ -36,6 +38,8 @@ const FeesDashboard = () => {
     setFilters((prev) => ({ ...prev, [name]: processedValue }));
   };
 
+  console.log(member?.organizationRolesMap);
+
   useEffect(() => {
     console.log(filters);
   }, [filters]);
@@ -46,6 +50,17 @@ const FeesDashboard = () => {
       <div className="flex justify-between mb-12">
         <DashboardTitle title="Fees" />
 
+        {/* Manage Fees Button - Conditionally Rendered */}
+        {member?.organizationRolesMap![organizationId!].role === "ROLE_ADMIN" &&
+          organizationId && (
+            <Link
+              to={`/app/dashboard/${organizationId}/manage`} // Adjust the route as needed
+              className="btn btn-primary btn-sm"
+            >
+              Manage Fees
+            </Link>
+          )}
+
         <div className="flex gap-2">
           <select
             name="semester"
@@ -53,6 +68,7 @@ const FeesDashboard = () => {
             className="select w-fit border-none rounded-box bg-base-100"
             onChange={handleFilterChange}
           >
+            <option value="">Semester</option>
             <option value={1}>1st</option>
             <option value={2}>2nd</option>
           </select>
@@ -62,6 +78,7 @@ const FeesDashboard = () => {
             className="select w-fit border-none rounded-box bg-base-100"
             onChange={handleFilterChange}
           >
+            <option value="">Year</option>
             {options.availableYears.map((year) => (
               <option value={parseInt(year)}>{year}</option>
             ))}
