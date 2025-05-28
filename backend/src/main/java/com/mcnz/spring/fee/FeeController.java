@@ -95,11 +95,7 @@ public class FeeController {
 
         List<FeeProjection> fees;
 
-        if (semester != null && year != null) {
-            fees = feeRepository.findByOrganizationIdWithFilter(organizationId, semester, year);
-        } else {
-            fees = new ArrayList<FeeProjection>();
-        }
+        fees = feeRepository.findByOrganizationIdWithFilter(organizationId, semester, year);
 
         return new ResponseEntity<>(fees, HttpStatus.OK);
 
@@ -236,6 +232,7 @@ public class FeeController {
 
     // get total paid and unpaid amounts for an organization as of a given date
     @GetMapping("/totals/{organizationId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
     public ResponseEntity<Map<String, Object>> getOrganizationFeeTotals(
             @PathVariable UUID organizationId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
@@ -257,6 +254,7 @@ public class FeeController {
 
     // get members with highest debt for an organization in a given semester
     @GetMapping("/highest-debt")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
     public ResponseEntity<List<Map<String, Object>>> getMembersWithHighestDebt(
             @RequestParam UUID organizationId,
             @RequestParam Integer semester,
@@ -273,7 +271,7 @@ public class FeeController {
                 memberDebt.put("email", row[3]);
                 memberDebt.put("gender", row[4]);
                 memberDebt.put("degreeProgram", row[5]);
-                memberDebt.put("totalDebt", row[8]);
+                memberDebt.put("totalDebt", row[9]);
                 membersWithDebt.add(memberDebt);
             }
 
@@ -285,6 +283,7 @@ public class FeeController {
 
     // get all late payments for an organization in a given semester and year
     @GetMapping("/late-payments")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
     public ResponseEntity<List<Map<String, Object>>> getLatePayments(
             @RequestParam UUID organizationId,
             @RequestParam Integer semester,

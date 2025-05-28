@@ -10,9 +10,15 @@ export function useOrganizationFees(
 ): UseFeesReturn {
   const [fees, setFees] = useState<Fee[] | null>(null);
   // availableOptions can be shared or fetched similarly if needed, or passed down from a parent component
-  const [availableOptions, setAvailableOptions] = useState<UseFeesReturn["options"]>({
+  const [availableOptions, setAvailableOptions] = useState<
+    UseFeesReturn["options"]
+  >({
     availableYears: [],
   });
+  if (!options.semester) {
+    delete options.semester;
+  }
+  console.log(options);
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -21,29 +27,37 @@ export function useOrganizationFees(
   // Effect for fetching available years (could be shared or from a dedicated endpoint)
   useEffect(() => {
     if (!organizationId || !enabled) {
-        setAvailableOptions({ availableYears: [] });
-        return;
+      setAvailableOptions({ availableYears: [] });
+      return;
     }
     let isCancelled = false;
     // This should ideally be a dedicated endpoint for options to avoid fetching all fees just for years
     const fetchOrgOptions = async () => {
-        try {
-            // Example: Assuming an endpoint that returns all fees for year derivation
-            // Or better: an endpoint like /organizations/{orgId}/fees/options
-            const response = await api.get<Fee[]>(`/fees/organization/${organizationId}`); // ADMIN Endpoint
-            if(!isCancelled) {
-                const years = [...new Set(response.map((fee) => String(fee.year)))].sort((a, b) => parseInt(b) - parseInt(a));
-                setAvailableOptions({ availableYears: years });
-            }
-        } catch (err) {
-            console.error("useOrganizationFees: Failed to fetch available years", err);
-            if (!isCancelled) setAvailableOptions({ availableYears: [] });
+      try {
+        // Example: Assuming an endpoint that returns all fees for year derivation
+        // Or better: an endpoint like /organizations/{orgId}/fees/options
+        const response = await api.get<Fee[]>(
+          `/fees/organization/${organizationId}`
+        ); // ADMIN Endpoint
+        if (!isCancelled) {
+          const years = [
+            ...new Set(response.map((fee) => String(fee.year))),
+          ].sort((a, b) => parseInt(b) - parseInt(a));
+          setAvailableOptions({ availableYears: years });
         }
+      } catch (err) {
+        console.error(
+          "useOrganizationFees: Failed to fetch available years",
+          err
+        );
+        if (!isCancelled) setAvailableOptions({ availableYears: [] });
+      }
     };
     fetchOrgOptions();
-    return () => { isCancelled = true; };
+    return () => {
+      isCancelled = true;
+    };
   }, [organizationId, enabled]);
-
 
   // Effect for fetching fees based on options
   useEffect(() => {
@@ -60,14 +74,13 @@ export function useOrganizationFees(
       setError(null);
 
       const queryParams = { ...memoizedOptions };
-       // Ensure numeric values for semester and year if they are strings in options
-      if (queryParams.semester && typeof queryParams.semester === 'string') {
+      // Ensure numeric values for semester and year if they are strings in options
+      if (queryParams.semester && typeof queryParams.semester === "string") {
         queryParams.semester = parseInt(queryParams.semester, 10);
       }
-      if (queryParams.year && typeof queryParams.year === 'string') {
+      if (queryParams.year && typeof queryParams.year === "string") {
         queryParams.year = parseInt(queryParams.year, 10);
       }
-
 
       // Admin endpoint for all fees, with filters
       // Example: /fees/organization/{organizationId}/all/filter
@@ -85,7 +98,11 @@ export function useOrganizationFees(
       } catch (err) {
         console.error("useOrganizationFees: Fetch failed", err);
         if (!isCancelled) {
-          setError(err instanceof Error ? err : new Error("Failed to fetch organization fees"));
+          setError(
+            err instanceof Error
+              ? err
+              : new Error("Failed to fetch organization fees")
+          );
           setFees(null);
         }
       } finally {
