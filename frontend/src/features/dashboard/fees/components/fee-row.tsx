@@ -1,15 +1,23 @@
 import { Fee } from "@/types/fee";
 
-type Props = { semesterIssued: string; isPaid: boolean; index: number } & Pick<
-  Fee,
-  "dueDate" | "amount"
->;
+type Props = {
+  memberName?: string;
+  semesterIssued: string;
+  isPaid: boolean;
+  index: number;
+  datePaid?: string;
+} & Pick<Fee, "dueDate" | "amount">;
 const FeeRow = (props: Props) => {
   return (
     <tr>
       <td className="text-2xl font-thin opacity-50 tabular-nums">
         {props.index}
       </td>
+      {props.memberName && (
+        <td>
+          <div>{props.memberName}</div>
+        </td>
+      )}
       <td>
         <div>{props.semesterIssued}</div>
       </td>
@@ -30,6 +38,11 @@ const FeeRow = (props: Props) => {
           </span>
         )}
       </td>
+      {props.datePaid && (
+        <td>
+          <div className="font-semibold">₱{props.datePaid}</div>
+        </td>
+      )}
     </tr>
   );
 };

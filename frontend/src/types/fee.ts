@@ -1,4 +1,5 @@
 export type Fee = {
+  memberName: string;
   feeId: number;
   amount: number;
   semester: string;

@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository.AvailableAcademicYears;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,11 +45,39 @@ public interface FeeRepository extends JpaRepository<Fee, UUID> {
                         @Param("year") Integer year,
                         @Param("organizationId") UUID organizationId, @Param("memberId") UUID memberId);
 
-        @Query(value = "SELECT * FROM fee WHERE organization_id = :organizationId", nativeQuery = true)
-        List<Fee> findByOrganizationId(@Param("organizationId") UUID organizationId);
+        public interface FeeProjection {
+                String getMemberName();
+
+                Integer getYear();
+
+                Integer getSemester();
+
+                String getDueDate();
+
+                Integer getAmount();
+
+                String getDatePaid();
+        }
+
+        @Query(value = "SELECT member.last_name || ', ' || member.first_name AS member_name, year, semester, due_date, amount, date_paid FROM fee NATURAL JOIN member WHERE organization_id = :organizationId", nativeQuery = true)
+        List<FeeProjection> findByOrganizationId(@Param("organizationId") UUID organizationId);
+
+        @Query(value = "SELECT member.last_name || ', ' || member.first_name AS member_name, year, semester, due_date, amount, date_paid FROM fee NATURAL JOIN member WHERE"
+                        +
+                        "  organization_id = :organizationId" +
+                        "  AND (:semester IS NULL OR semester = :semester)" +
+                        "  AND (:year IS NULL OR year = :year)", nativeQuery = true)
+        List<FeeProjection> findByOrganizationIdWithFilter(@Param("organizationId") UUID organizationId,
+                        @Param("semester") Integer semester,
+                        @Param("year") Integer year);
+
+        @Query(value = """
+                        SELECT DISTINCT year FROM fee WHERE organization_id = :organizationId;
+                        """, nativeQuery = true)
+        List<AvailableAcademicYears> getAvailableAcademicYears(@Param("organizationId") UUID organizationId);
 
         @Query(value = "SELECT * FROM fee WHERE organization_id = :organizationId AND member_id = :memberId", nativeQuery = true)
-        List<Fee> findByOrganizationIdAndMemberId(@Param("organizationId") UUID organizationId,
+        List<FeeProjection> findByOrganizationIdAndMemberId(@Param("organizationId") UUID organizationId,
                         @Param("memberId") UUID memberId);
 
         @Modifying

@@ -3,12 +3,15 @@ package com.mcnz.spring.fee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.mcnz.spring.fee.FeeRepository.FeeProjection;
 import com.mcnz.spring.fee.FeeRepository.FeeSummaryProjection;
 import com.mcnz.spring.member.Member;
+import com.mcnz.spring.membership.MemberOrganizationRoleRepository.AvailableAcademicYears;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,16 +50,17 @@ public class FeeController {
     }
 
     @GetMapping("/organization/{organizationId}")
-    public ResponseEntity<List<Fee>> getFeesByOrganizationId(@PathVariable UUID organizationId) {
-        List<Fee> fees = feeRepository.findByOrganizationId(organizationId);
+    public ResponseEntity<List<FeeProjection>> getFeesByOrganizationId(@PathVariable UUID organizationId) {
+        List<FeeProjection> fees = feeRepository.findByOrganizationId(organizationId);
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
 
     @GetMapping("/organization/{organizationId}/me")
-    public ResponseEntity<List<Fee>> getFeesByOrganizationIdAndMemberId(@PathVariable UUID organizationId) {
+    public ResponseEntity<List<FeeProjection>> getFeesByOrganizationIdAndMemberId(@PathVariable UUID organizationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member currentMember = (Member) authentication.getPrincipal();
-        List<Fee> fees = feeRepository.findByOrganizationIdAndMemberId(organizationId, currentMember.getMemberId());
+        List<FeeProjection> fees = feeRepository.findByOrganizationIdAndMemberId(organizationId,
+                currentMember.getMemberId());
         return new ResponseEntity<>(fees, HttpStatus.OK);
     }
 
@@ -84,24 +88,38 @@ public class FeeController {
     }
 
     @GetMapping("/organization/{organizationId}/filter")
-    public ResponseEntity<List<Fee>> filterFees(
+    public ResponseEntity<List<FeeProjection>> filterFees(
             @PathVariable UUID organizationId,
             @RequestParam(required = false) Integer semester,
             @RequestParam(required = false) Integer year) {
 
-        List<Fee> fees;
+        List<FeeProjection> fees;
 
         if (semester != null && year != null) {
-            fees = feeRepository.findBySemesterAndYear(semester, year, organizationId);
-        } else if (semester != null) {
-            fees = feeRepository.findBySemester(semester, organizationId);
-        } else if (year != null) {
-            fees = feeRepository.findByYear(year, organizationId);
+            fees = feeRepository.findByOrganizationIdWithFilter(organizationId, semester, year);
         } else {
-            fees = feeRepository.findByOrganizationId(organizationId);
+            fees = new ArrayList<FeeProjection>();
         }
 
         return new ResponseEntity<>(fees, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/available-years")
+    @PreAuthorize("hasAuthority('ROLE_MEMBER_ORG_' + #organizationId) or hasAuthority('ROLE_ADMIN_ORG_' + #organizationId)")
+    public ResponseEntity<List<AvailableAcademicYears>> getAvailableAcademicYears(
+            @PathVariable UUID organizationId
+
+    ) {
+
+        List<AvailableAcademicYears> years = feeRepository
+                .getAvailableAcademicYears(organizationId);
+
+        if (years.isEmpty()) {
+
+        }
+
+        return ResponseEntity.ok(years);
     }
 
     @PostMapping

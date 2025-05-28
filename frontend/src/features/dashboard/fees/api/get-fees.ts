@@ -20,7 +20,7 @@ export function useFees(
   useEffect(() => {
     (async () => {
       const response = await api.get<Fee[]>(
-        `/fees/organization/${organizationId}`
+        `/fees/organization/${organizationId}/available-years`
       );
 
       const availableYears = [...new Set(response.map((fee) => fee.year))];

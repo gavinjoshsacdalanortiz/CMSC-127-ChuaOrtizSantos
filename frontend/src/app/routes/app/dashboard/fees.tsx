@@ -8,7 +8,6 @@ import { FeeQueryOptions } from "@/types/fee";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
-// TODO: edit options once backend is good
 const FeesDashboard = () => {
   const { member } = useAuth();
   const { orgId: organizationId } = useParams();
@@ -38,8 +37,6 @@ const FeesDashboard = () => {
     setFilters((prev) => ({ ...prev, [name]: processedValue }));
   };
 
-  console.log(member?.organizationRolesMap);
-
   useEffect(() => {
     console.log(filters);
   }, [filters]);
@@ -50,11 +47,10 @@ const FeesDashboard = () => {
       <div className="flex justify-between mb-12">
         <DashboardTitle title="Fees" />
 
-        {/* Manage Fees Button - Conditionally Rendered */}
         {member?.organizationRolesMap![organizationId!].role === "ROLE_ADMIN" &&
           organizationId && (
             <Link
-              to={`/app/dashboard/${organizationId}/manage`} // Adjust the route as needed
+              to={`/app/dashboard/${organizationId}/manage`}
               className="btn btn-primary btn-sm"
             >
               Manage Fees
