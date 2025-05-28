@@ -10,6 +10,7 @@ export interface Member {
   degreeProgram: string;
   batch: string;
   email: string;
+  year: number;
   createdAt: string; // Date maps to ISO date string
   updatedAt: string; // Date maps to ISO date string
   authorities?: GrantedAuthority[] | string[]; // Assuming an array of role strings or objects
@@ -43,6 +44,8 @@ export interface MemberQueryOptions {
   degreeProgram?: string;
   batch?: string;
   committee?: string;
+  year?: number;
+  semester?: number;
 }
 
 export interface StatQueryOptions {
@@ -58,6 +61,7 @@ export interface UseMembersReturn {
     availableDegreePrograms: string[];
     availableCommittees: string[];
     availableBatches: string[];
+    availableAcademicYears: number[];
   };
   pending: boolean;
   error: Error | null;

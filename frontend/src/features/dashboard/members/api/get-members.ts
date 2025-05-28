@@ -12,7 +12,7 @@ import { getToken } from "@/lib/cookie";
 export function useMembers(
   options: MemberQueryOptions = {},
   statOptions: StatQueryOptions = {},
-  organizationId: string,
+  organizationId: string
 ): UseMembersReturn {
   const [members, setMembers] = useState<Member[] | null>(null);
   const [stats, setStats] = useState<MembershipStatusPercentage[] | null>(null);
@@ -22,18 +22,19 @@ export function useMembers(
     availableDegreePrograms: [],
     availableCommittees: [],
     availableBatches: [],
+    availableAcademicYears: [],
   });
   const [pending, setPending] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null); // For main members data fetching
   const optionsString = useMemo(() => JSON.stringify(options), [options]);
   const statOptionsString = useMemo(
     () => JSON.stringify(statOptions),
-    [statOptions],
+    [statOptions]
   );
 
   useEffect(() => {
     const currentStatOptions = JSON.parse(
-      statOptionsString,
+      statOptionsString
     ) as StatQueryOptions;
 
     let isCancelled = false;
@@ -60,7 +61,7 @@ export function useMembers(
           `/membership/${organizationId}/members/status-percentages`,
           {
             params: currentStatOptions,
-          },
+          }
         );
 
         if (!isCancelled) {
@@ -70,7 +71,7 @@ export function useMembers(
         console.error("useMembers: Fetch stat failed", err);
         if (!isCancelled) {
           setError(
-            err instanceof Error ? err : new Error("Failed to fetch stats"),
+            err instanceof Error ? err : new Error("Failed to fetch stats")
           );
           setStats(null);
         }
@@ -98,7 +99,8 @@ export function useMembers(
       !members ||
       !!availableOptions.availableDegreePrograms.length ||
       !!availableOptions.availableCommittees.length ||
-      !!availableOptions.availableBatches.length
+      !!availableOptions.availableBatches.length ||
+      !!availableOptions.availableAcademicYears.length
     )
       return;
 
@@ -108,7 +110,7 @@ export function useMembers(
 
     const availableCommittees = [
       ...new Set(
-        members.map((member) => (member.committee ? member.committee : "")),
+        members.map((member) => (member.committee ? member.committee : ""))
       ),
     ];
 
@@ -116,11 +118,20 @@ export function useMembers(
       ...new Set(members.map((member) => member.batch)),
     ];
 
-    setAvailableOptions({
-      availableDegreePrograms: availableDegrees,
-      availableCommittees: availableCommittees,
-      availableBatches: availableBatches,
-    });
+    (async () => {
+      const responseData = await api.get<[{ [year: string]: number }]>(
+        `/membership/${organizationId}/members/available-years`
+      );
+
+      const availableAcademicYears = responseData.map((data) => data.year);
+
+      setAvailableOptions({
+        availableAcademicYears,
+        availableDegreePrograms: availableDegrees,
+        availableCommittees: availableCommittees,
+        availableBatches: availableBatches,
+      });
+    })();
   }, [members]);
 
   useEffect(() => {
@@ -150,7 +161,7 @@ export function useMembers(
           `/membership/${organizationId}/members`,
           {
             params: currentOptions,
-          },
+          }
         );
 
         if (!isCancelled) {
@@ -160,7 +171,7 @@ export function useMembers(
         console.error("useMembers: Fetch members failed", err);
         if (!isCancelled) {
           setError(
-            err instanceof Error ? err : new Error("Failed to fetch members"),
+            err instanceof Error ? err : new Error("Failed to fetch members")
           );
           setMembers(null);
         }

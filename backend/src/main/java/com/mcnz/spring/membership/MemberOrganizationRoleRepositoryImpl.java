@@ -83,6 +83,8 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
 
         if (year != null && semester != null) {
             sql.append(" AND mor.year = :year AND mor.semester = :semester");
+        } else if (year != null) {
+            sql.append(" AND mor.year = :year");
         } else if (yearStart != null && semesterStart != null && yearEnd != null && semesterEnd != null) {
             sql.append(
                     " AND (mor.year * 10 + mor.semester) BETWEEN (:yearStart * 10 + :semesterStart) AND (:yearEnd * 10 + :semesterEnd)");
@@ -133,6 +135,9 @@ public class MemberOrganizationRoleRepositoryImpl implements MemberOrganizationR
         if (year != null && semester != null) {
             query.setParameter("year", year);
             query.setParameter("semester", semester);
+        }
+        if (year != null) {
+            query.setParameter("year", year);
         }
         if (yearStart != null)
             query.setParameter("yearStart", yearStart);

@@ -12,16 +12,16 @@ const MembersDashboard = () => {
   const { orgId: organizationId } = useParams();
 
   const [filters, setFilters] = useState<MemberQueryOptions>(
-    {} as MemberQueryOptions,
+    {} as MemberQueryOptions
   );
   const [statOptions, setStatOptions] = useState<StatQueryOptions>(
-    {} as StatQueryOptions,
+    {} as StatQueryOptions
   );
 
   const { members, stats, options, pending, error } = useMembers(
     filters,
     statOptions,
-    organizationId!,
+    organizationId!
   );
 
   const stMap = new Map<string, number>();
@@ -31,7 +31,7 @@ const MembersDashboard = () => {
   const reversedStMap = reverseMap(stMap);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFilters((prev) => ({
@@ -45,7 +45,7 @@ const MembersDashboard = () => {
   };
 
   const handleStatChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setStatOptions((prev) => ({
@@ -54,8 +54,8 @@ const MembersDashboard = () => {
         value === ""
           ? undefined
           : name == "startSemester"
-            ? stMap.get(value)
-            : parseInt(value),
+          ? stMap.get(value)
+          : parseInt(value),
     }));
 
     if (statOptions.startSemester === undefined) {
@@ -65,8 +65,8 @@ const MembersDashboard = () => {
           value === ""
             ? undefined
             : name == "startSemester"
-              ? stMap.get(value)
-              : parseInt(value),
+            ? stMap.get(value)
+            : parseInt(value),
       }));
     }
   };
@@ -80,30 +80,53 @@ const MembersDashboard = () => {
   }, [statOptions]);
 
   if (pending) <div className="loading loading-spinner"></div>;
-
+  console.log(filters);
   return (
     <>
       <div className="flex justify-between mb-12">
         <DashboardTitle title="Members" />
 
-        <div className="space-y-1">
-          <select
-            name="batch"
-            value={filters.batch}
-            className="select border-none rounded-box bg-base-100"
-            onChange={(e) => {
-              const newBatch = e.target.value;
+        <div className="flex gap-5">
+          <div className="space-y-1">
+            <select
+              name="year"
+              value={filters.year}
+              className="select border-none rounded-box bg-base-100"
+              onChange={(e) => {
+                const newYear = parseInt(e.target.value);
 
-              setFilters((prevFilters) => ({
-                ...prevFilters,
-                batch: newBatch,
-              }));
-            }}
-          >
-            {options.availableBatches.map((batch) => (
-              <option>{batch}</option>
-            ))}
-          </select>
+                setFilters((prevFilters) => ({
+                  ...prevFilters,
+                  year: newYear,
+                }));
+              }}
+            >
+              <option value="">Year</option>
+              {options.availableAcademicYears.map((year) => (
+                <option>{year}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1">
+            <select
+              name="year"
+              value={filters.semester}
+              className="select border-none rounded-box bg-base-100"
+              onChange={(e) => {
+                const newSemester = parseInt(e.target.value);
+
+                setFilters((prevFilters) => ({
+                  ...prevFilters,
+                  semester: newSemester,
+                }));
+              }}
+            >
+              <option value="">Semester</option>
+              {["1st", "2nd"].map((semester) => (
+                <option value={stMap.get(semester)}>{semester}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -137,6 +160,14 @@ const MembersDashboard = () => {
           label="Degree Program"
           activated={!!filters.degreeProgram}
           options={options.availableDegreePrograms}
+          onChange={handleFilterChange}
+          onClear={handleClearFilter}
+        />
+        <MemberFilterButton
+          name="batch"
+          label="Batch"
+          activated={!!filters.batch}
+          options={options.availableBatches.map((batch) => batch + "")}
           onChange={handleFilterChange}
           onClear={handleClearFilter}
         />
